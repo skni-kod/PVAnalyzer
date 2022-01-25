@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePVInstallation;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class PVInstallationController extends Controller
 {
@@ -22,9 +24,16 @@ class PVInstallationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePVInstallation $request)
     {
-        //
+        $data = $request->only([
+            'start',
+            'power'
+        ]);
+        $userId = auth()->user()->id;
+        $user = User::find($userId);
+        $pVInstallation = $user->pVInstallation->create($data);
+        return $pVInstallation;
     }
 
     /**
