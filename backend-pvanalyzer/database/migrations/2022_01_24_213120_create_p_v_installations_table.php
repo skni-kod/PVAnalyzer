@@ -15,7 +15,14 @@ class CreatePVInstallationsTable extends Migration
     {
         Schema::create('p_v_installations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->date('start')->nullable();
+            $table->float('power');
             $table->timestamps();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

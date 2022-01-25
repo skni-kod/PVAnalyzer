@@ -15,7 +15,16 @@ class CreateCounterReadingsTable extends Migration
     {
         Schema::create('counter_readings', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('p_v_installation_id');
+            $table->date('date');
+            $table->float('active_energy_consumed');
+            $table->float('reactive_energy_consumed');
+            $table->float('energy_to_recover');
             $table->timestamps();
+            $table->foreign('p_v_installation_id')
+                ->references('id')
+                ->on('p_v_installations')
+                ->onDelete('cascade');
         });
     }
 
