@@ -55,9 +55,16 @@ class PVInstallationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorePVInstallation $request, $id)
     {
-        //
+        $data = $request->only([
+            'start',
+            'power'
+        ]);
+        $pVInstallation = PVInstallation::find($id);
+        $pVInstallation->update($data);
+        
+        return $pVInstallation;
     }
 
     /**
