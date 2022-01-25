@@ -41,4 +41,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     *  Get the installation associated with the user.
+     */
+    public function pVInstallation()
+    {
+        return $this->hasOne(PVInstallation::class);
+    }
 }
