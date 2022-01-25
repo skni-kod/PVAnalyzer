@@ -33,7 +33,7 @@ class PVInstallationController extends Controller
         ]);
         $userId = auth()->user()->id;
         $user = User::find($userId);
-        $pVInstallation = $user->pVInstallation->create($data);
+        $pVInstallation = $user->pVInstallation()->create($data);
         return $pVInstallation;
     }
 

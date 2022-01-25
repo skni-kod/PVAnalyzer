@@ -14,12 +14,12 @@ class CreatePVInstallationsTable extends Migration
     public function up()
     {
         Schema::create('p_v_installations', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->date('start')->nullable();
-            $table->float('power');
+            $table->id();                           //identyfikator
+            $table->unsignedBigInteger('user_id');  //identyfikator relacji
+            $table->date('start')->nullable();      //data podłączenia instalacji do sieci
+            $table->float('power');                 //moc instalacji
             $table->timestamps();
-            $table->foreign('user_id')
+            $table->foreign('user_id')              //klucz obcy relacji pomiedzy userem a instalacją
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
