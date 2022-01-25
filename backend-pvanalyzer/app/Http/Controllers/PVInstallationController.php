@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePVInstallation;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\PVInstallation;
 
 class PVInstallationController extends Controller
 {
@@ -44,7 +45,7 @@ class PVInstallationController extends Controller
      */
     public function show($id)
     {
-        //
+        return PVInstallation::find($id);
     }
 
     /**
