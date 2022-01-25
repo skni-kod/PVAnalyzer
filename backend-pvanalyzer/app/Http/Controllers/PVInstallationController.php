@@ -75,6 +75,6 @@ class PVInstallationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return PVInstallation::destroy($id);
     }
 }
