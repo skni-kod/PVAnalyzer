@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePVInstallation;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\PVInstallation;
 
 class PVInstallationController extends Controller
 {
@@ -13,7 +16,7 @@ class PVInstallationController extends Controller
      */
     public function index()
     {
-        //
+        return PVInstallation::all();
     }
 
     /**
@@ -22,9 +25,16 @@ class PVInstallationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePVInstallation $request)
     {
-        //
+        $data = $request->only([
+            'start',
+            'power'
+        ]);
+        $userId = auth()->user()->id;
+        $user = User::find($userId);
+        $pVInstallation = $user->pVInstallation->create($data);
+        return $pVInstallation;
     }
 
     /**
@@ -35,7 +45,7 @@ class PVInstallationController extends Controller
      */
     public function show($id)
     {
-        //
+        return PVInstallation::find($id);
     }
 
     /**
@@ -45,9 +55,16 @@ class PVInstallationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorePVInstallation $request, $id)
     {
-        //
+        $data = $request->only([
+            'start',
+            'power'
+        ]);
+        $pVInstallation = PVInstallation::find($id);
+        $pVInstallation->update($data);
+        
+        return $pVInstallation;
     }
 
     /**
@@ -58,6 +75,6 @@ class PVInstallationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return PVInstallation::destroy($id);
     }
 }
