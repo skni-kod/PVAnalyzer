@@ -16,7 +16,7 @@ class PVInstallationController extends Controller
      */
     public function index()
     {
-        //
+        return PVInstallation::all();
     }
 
     /**
