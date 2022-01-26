@@ -1,4 +1,4 @@
-# PVAnalzyer
+# PVAnalyzer
 > It is a web application that allows you to analyze electricity consumption and savings resulting from the installation of a photovoltaic installation.
 
 ## Table of Contents
