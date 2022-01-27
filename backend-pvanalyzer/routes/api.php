@@ -19,15 +19,17 @@ use App\Http\Controllers\AuthController;
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/pv-installation/{id}', [App\Http\Controllers\PVInstallationController::class, 'show']);
+
 
 
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function()
 {
-    Route::post('/pv-installation', [App\Http\Controllers\PVInstallationController::class, 'store']);
-    Route::put('/pv-installation/{id}', [App\Http\Controllers\PVInstallationController::class, 'update']);
-    Route::delete('/pv-installation/{id}', [App\Http\Controllers\PVInstallationController::class, 'destroy']);
+    Route::get('/pv-installations', [App\Http\Controllers\PVInstallationController::class, 'index']);
+    Route::post('/pv-installations', [App\Http\Controllers\PVInstallationController::class, 'store']);
+    Route::get('/pv-installations/{pVInstallation}', [App\Http\Controllers\PVInstallationController::class, 'show']);
+    Route::put('/pv-installations/{pVInstallation}', [App\Http\Controllers\PVInstallationController::class, 'update']);
+    Route::delete('/pv-installations/{pVInstallation}', [App\Http\Controllers\PVInstallationController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

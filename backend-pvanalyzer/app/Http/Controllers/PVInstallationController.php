@@ -6,6 +6,7 @@ use App\Http\Requests\StorePVInstallation;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\PVInstallation;
+use App\Http\Resources\PVInstallationResource;
 
 class PVInstallationController extends Controller
 {
@@ -14,9 +15,9 @@ class PVInstallationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PVInstallation::all();
+        return PVInstallationResource::collection(PVInstallation::where('user_id', $request->user()->id)->paginate());
     }
 
     /**
@@ -31,10 +32,9 @@ class PVInstallationController extends Controller
             'start',
             'power'
         ]);
-        $userId = auth()->user()->id;
-        $user = User::find($userId);
-        $pVInstallation = $user->pVInstallation()->create($data);
-        return $pVInstallation;
+        $user = User::find($request->user()->id);
+        return new PVInstallationResource($user->pVInstallation()->create($data));
+        
     }
 
     /**
@@ -43,9 +43,12 @@ class PVInstallationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(PVInstallation $pVInstallation)
     {
-        return PVInstallation::find($id);
+        if($pVInstallation->user_id != auth()->user()->id){
+            return abort(403, 'Unauthorized action.');
+        }
+        return new PVInstallationResource($pVInstallation);
     }
 
     /**
@@ -55,16 +58,18 @@ class PVInstallationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StorePVInstallation $request, $id)
+    public function update(StorePVInstallation $request, PVInstallation $pVInstallation)
     {
         $data = $request->only([
             'start',
             'power'
         ]);
-        $pVInstallation = PVInstallation::find($id);
+        if($pVInstallation->user_id != auth()->user()->id){
+            return abort(403, 'Unauthorized action.');
+        }
         $pVInstallation->update($data);
         
-        return $pVInstallation;
+        return new PVInstallationResource($pVInstallation);
     }
 
     /**
@@ -73,8 +78,12 @@ class PVInstallationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(PVInstallation $pVInstallation)
     {
-        return PVInstallation::destroy($id);
+        if ($pVInstallation->user_id != auth()->user()->id) {
+            return abort(403, 'Unauthorized action.');
+        }
+        $pVInstallation->delete();
+        return response('', 204);
     }
 }
