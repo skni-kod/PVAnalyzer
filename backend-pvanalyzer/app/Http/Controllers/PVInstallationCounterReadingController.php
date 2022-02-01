@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCounterReading;
 use App\Http\Resources\CounterReadingResource;
 use App\Models\CounterReading;
 use App\Models\PVInstallation;
@@ -25,7 +26,7 @@ class PVInstallationCounterReadingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, PVInstallation $pVInstallation)
+    public function store(StoreCounterReading $request, PVInstallation $pVInstallation)
     {
         $data = $request->only([
             'date',
@@ -61,7 +62,7 @@ class PVInstallationCounterReadingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PVInstallation $pVInstallation, CounterReading $counterReading)
+    public function update(StoreCounterReading $request, PVInstallation $pVInstallation, CounterReading $counterReading)
     {
         $data = $request->only([
             'date',
