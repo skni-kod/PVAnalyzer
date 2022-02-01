@@ -32,9 +32,14 @@ class PVInstallationController extends Controller
             'start',
             'power'
         ]);
+
         $user = User::find($request->user()->id);
-        return new PVInstallationResource($user->pVInstallation()->create($data));
-        
+
+        $message = [
+            'status' => true,
+            'message' => 'PV Installation created successfully'
+        ];
+        return (new PVInstallationResource($user->pVInstallation()->create($data)))->additional($message);
     }
 
     /**
@@ -45,7 +50,7 @@ class PVInstallationController extends Controller
      */
     public function show(PVInstallation $pVInstallation)
     {
-        if($pVInstallation->user_id != auth()->user()->id){
+        if ($pVInstallation->user_id != auth()->user()->id) {
             return abort(403, 'Unauthorized action.');
         }
         return new PVInstallationResource($pVInstallation);
@@ -64,12 +69,17 @@ class PVInstallationController extends Controller
             'start',
             'power'
         ]);
-        if($pVInstallation->user_id != auth()->user()->id){
+        if ($pVInstallation->user_id != auth()->user()->id) {
             return abort(403, 'Unauthorized action.');
         }
+
         $pVInstallation->update($data);
-        
-        return new PVInstallationResource($pVInstallation);
+
+        $message = [
+            'status' => true,
+            'message' => 'PV Installation updated successfully'
+        ];
+        return (new PVInstallationResource($pVInstallation))->additional($message);;
     }
 
     /**
@@ -84,6 +94,8 @@ class PVInstallationController extends Controller
             return abort(403, 'Unauthorized action.');
         }
         $pVInstallation->delete();
-        return response('', 204);
+        return response([
+            'message' => 'PV Installation deleted successfully'
+        ], 200);
     }
 }
