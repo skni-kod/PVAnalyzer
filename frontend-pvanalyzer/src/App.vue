@@ -1,26 +1,55 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div v-if="isLogin">
+<Sidebar />
+    <div :style="{ 'margin-left': sidebarWidth }">
+      
+    </div>
+</div>
+<router-view></router-view>
+  
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Sidebar from "./components/sidebar/Sidebar.vue";
+import { sidebarWidth } from "./components/sidebar/state.js";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  name: "App",
+  components: { Sidebar},
+  setup() {
+    return { sidebarWidth };
+  },
+  data() {
+    return {
+      isLogin: false,
+    };
+  },
+  created(){
+    this.isAuth()
+  },
+  methods:{
+    isAuth(){
+      if(this.isLogin === false){
+        // this.$router.push('/register');
+        this.$router.push('/login');
+      }
+    }
   }
-}
+};
 </script>
 
 <style>
+body{
+  /* min-height: 100vh */
+  height: 100vh;
+  /* height: 100%; */
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  /* height: 100vh; */
+  height: 100%;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
