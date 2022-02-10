@@ -1,66 +1,74 @@
 <template>
-  <router-link :to="to" class="link" :class="{active: isActive}">
+  <div v-if="to">
+    <router-link :to="to" class="link" :class="{ active: isActive }">
       <i class="icon" :class="icon" />
       <span v-if="!collapsed">
-          <slot />
+        <slot />
       </span>
-  </router-link>
+    </router-link>
+  </div>
+  <div v-else class="link">
+    <i class="icon" :class="icon" />
+    <span v-if="!collapsed">
+      <slot />
+    </span>
+  </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { collapsed } from './state'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { collapsed } from "./state";
 
 export default {
-props: {
-    to: { 
-        type: String,
-        required: true
+  props: {
+    to: {
+      type: String,
+      required: false,
     },
     icon: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-},
-setup(props){
-    const route = useRoute()
-    const isActive = computed(() => route.path === props.to)
-    return { isActive, collapsed } 
-}
-}
+  },
+  setup(props) {
+    const route = useRoute();
+    const isActive = computed(() => route.path === props.to);
+    return { isActive, collapsed };
+  },
+};
 </script>
 
 <style scoped>
-.link{
-    display: flex;
-    align-items: center;
+.link {
+  display: flex;
+  align-items: center;
 
-    cursor: pointer;
-    position: relative;
-    font-weight: 400;
-    user-select: none;
+  cursor: pointer;
+  position: relative;
+  font-weight: 400;
+  user-select: none;
 
-    margin: 0.1em 0;
-    padding: 0.4em;
-    border-radius: 0.25em;
-    height: 1.5em;
+  margin: 0.1em 0;
+  padding: 0.4em;
+  border-radius: 0.25em;
+  height: 1.5em;
 
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 }
 
 .link:hover {
-    background-color: var(--sidebar-item-hover);
+  background-color: var(--sidebar-item-hover);
 }
 
-.link.active{
-    background-color: var(--sidebar-item-active);
+.link.active {
+  background-color: var(--sidebar-item-active);
 }
 
-.link .icon{
-    flex-shrink: 0;
-    width: 25px;
-    margin-right: 10px;
+.link .icon {
+  flex-shrink: 0;
+  width: 25px;
+  margin-right: 10px;
 }
 </style>

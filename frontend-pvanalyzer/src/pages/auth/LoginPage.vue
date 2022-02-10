@@ -2,19 +2,19 @@
  <base-login-register>
  <div class="box">
                 <div class="content">
-                    <form action="">
+                    <form @submit.prevent="siema">
                         <div class="form-control">
                             <label class="label-form" for="username">Nazwa użytkownika</label>
-                            <input class="input-form" type="text" id="username" value="janRapowanie47@gmail.com"/>
+                            <input class="input-form" type="text" id="username" placeholder="Email" v-model.trim="email" />
                         </div>
                         <div class="form-control">
                             <label class="label-form" for="password">Hasło </label>
-                            <input class="input-form" type="password" id="password" value="123456"/>
+                            <input class="input-form" type="password" id="password" placeholder="Hasło" v-model.trim="password" />
                         </div>
                       </form>
                 </div>
                 <div class="submit-button">
-                    <button>Zaloguj się</button>
+                    <button type="submit" @click="submitForm">Zaloguj się</button>
                 </div>
             </div>
            
@@ -26,7 +26,39 @@
 
 <script>
 export default {
+data(){
+  return{
+    email: '',
+    password: '',
+    error: null
+  }
+},
 
+methods:{
+  // elo(){
+  //   console.log('Siema');
+  // },
+  siema(){
+    console.log('47 to jest pierdolony movement');
+  },
+  async submitForm(){
+    console.log('wbiło?');
+    const actionPayload = {
+      email: this.email,
+      password: this.password,
+    };
+
+    try{
+    await this.$store.dispatch('login', actionPayload);
+    console.log('Route to: ',this.$route.query.redirect);
+    const redirectUrl = '/' + (this.$route.query.redirect || 'dashboard');
+    console.log('redirect: ', redirectUrl);
+    this.$router.replace(redirectUrl);
+    }catch (err){
+      this.error = err.message
+    }
+  }
+}
 }
 </script>
 
