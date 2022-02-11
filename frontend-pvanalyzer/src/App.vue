@@ -1,12 +1,10 @@
 <template>
-<div v-if="isLogin">
-<Sidebar />
-    <div :style="{ 'margin-left': sidebarWidth }">
-      
-    </div>
-</div>
-<router-view></router-view>
-  
+  <div v-if="isLoggedIn">
+    <Sidebar />
+    <div :style="{ 'margin-left': sidebarWidth }"></div>
+  </div>
+  <router-view>
+  </router-view>
 </template>
 
 <script>
@@ -15,31 +13,25 @@ import { sidebarWidth } from "./components/sidebar/state.js";
 
 export default {
   name: "App",
-  components: { Sidebar},
+  components: { Sidebar },
   setup() {
     return { sidebarWidth };
   },
   data() {
-    return {
-      isLogin: false,
-    };
+    return {};
   },
-  created(){
-    this.isAuth()
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
+    },
   },
-  methods:{
-    isAuth(){
-      if(this.isLogin === false){
-        // this.$router.push('/register');
-        this.$router.push('/login');
-      }
-    }
-  }
+
+  methods: {},
 };
 </script>
 
 <style>
-body{
+body {
   /* min-height: 100vh */
   height: 100vh;
   /* height: 100%; */
