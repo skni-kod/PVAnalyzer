@@ -48,7 +48,6 @@ export default {
 
   methods: {
     async submitForm() {
-      console.log("wbiło?");
       const actionPayload = {
         email: this.email,
         password: this.password,
@@ -56,7 +55,6 @@ export default {
 
       try {
         await this.$store.dispatch("login", actionPayload);
-        console.log("Route to: ", this.$route.query.redirect);
         const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
         console.log("Logowanie zakończone powodzeniem");
         this.$router.replace(redirectUrl);
@@ -73,7 +71,6 @@ export default {
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.26);
   margin: 5% 15% 0 15%;
 }
-
 .content {
   padding: 10px 40px 10px 40px;
   background-color: #ffffff;

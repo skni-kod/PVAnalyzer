@@ -27,10 +27,11 @@ export default {
 
 <style scoped>
 .card {
-  border-radius: 12px;
+  min-width: 280px;
+  /* border-radius: 12px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   margin-right: 80px;
   margin-top: 30px;
-  padding: 1rem;
+  padding: 1rem 25px;
 }
 </style>
