@@ -1,6 +1,37 @@
+import axios from "axios";
+
 export default {
-  async register(context, payload){
-    let url = 'http://127.0.0.1:8000/api/register';
+  async editProfile(context, payload) {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId")
+
+    let url = `http://127.0.0.1:8000/api/users/${userId}`;
+
+    let data = {
+      name: payload.name,
+    };
+    axios
+      .put(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        context.commit("setName", {
+          userName: res.data.data.name,
+        });
+        // context.commit("setEmail", {
+        //   userEmail: res.data.data.email,
+        // });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  },
+  async register(context, payload) {
+    let url = "http://127.0.0.1:8000/api/register";
 
     const response = await fetch(url, {
       method: "POST",
@@ -8,7 +39,7 @@ export default {
         name: payload.name,
         email: payload.email,
         password: payload.password,
-        password_confirmation: payload.password_confirmation
+        password_confirmation: payload.password_confirmation,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +76,7 @@ export default {
       }),
       headers: {
         "Content-Type": "application/json",
-      },      
+      },
     });
 
     const responseData = await response.json();
@@ -64,6 +95,7 @@ export default {
       token: responseData.token,
       userId: responseData.user.id,
       userName: responseData.user.name,
+      userEmail: responseData.user.email,
     });
 
     console.log(responseData);

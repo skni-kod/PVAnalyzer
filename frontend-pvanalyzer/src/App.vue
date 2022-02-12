@@ -39,7 +39,9 @@ body {
 #app {
   /* height: 100vh; */
   height: 100%;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: 'Lato', sans-serif;
+    /* font-weight: 900; */
+  /* font-family: Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;

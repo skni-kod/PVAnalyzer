@@ -16,6 +16,7 @@ const router = createRouter({
         { path: '/register', component: RegisterPage},
         { path: '/pv-installation', component: PVInstallation, meta: { requiresAuth: true }},     //info o instalacji
         { path: '/readings', component: null,  meta: { requiresAuth: true }},                      //odczyty
+        // { path: '/profile', component: ProfilePage,},
         { path: '/profile', component: ProfilePage, meta: { requiresAuth: true }},
     ]
 });
