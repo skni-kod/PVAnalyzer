@@ -79,7 +79,7 @@ class PVInstallationController extends Controller
             'status' => true,
             'message' => 'PV Installation updated successfully'
         ];
-        return (new PVInstallationResource($pVInstallation))->additional($message);;
+        return (new PVInstallationResource($pVInstallation))->additional($message);
     }
 
     /**

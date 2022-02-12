@@ -28,6 +28,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    //User
+    Route::get('/users/{user}', [App\Http\Controllers\AuthController::class, 'showUser']);
+    Route::put('/users/{user}', [App\Http\Controllers\AuthController::class, 'editProfile']);
     //PVInstallations
     Route::get('/pv-installations', [App\Http\Controllers\PVInstallationController::class, 'index']);
     Route::post('/pv-installations', [App\Http\Controllers\PVInstallationController::class, 'store']);
