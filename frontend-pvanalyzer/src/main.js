@@ -5,8 +5,11 @@ import store from './store/index.js';
 
 import App from './App.vue'
 import BaseCard from './components/ui/BaseCard.vue';
+import BaseBlueButton from './components/ui/BaseBlueButton.vue';
 import LoginRegisterCard from './components/ui/LoginRegister.vue';
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import '@fortawesome/fontawesome-free/js/all.js'
 
 const app = createApp(App);
@@ -14,8 +17,10 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
+app.use(VueAxios, axios)
 
 app.component('base-card', BaseCard);
+app.component('base-blue-button', BaseBlueButton);
 app.component('base-login-register', LoginRegisterCard);
 
 app.mount('#app')
