@@ -6,6 +6,7 @@ import store from './store/index.js';
 import App from './App.vue'
 import BaseCard from './components/ui/BaseCard.vue';
 import BaseBlueButton from './components/ui/BaseBlueButton.vue';
+import FlashMessage from './components/ui/FlashMessage.vue';
 import LoginRegisterCard from './components/ui/LoginRegister.vue';
 
 import axios from 'axios'
@@ -22,5 +23,6 @@ app.use(VueAxios, axios)
 app.component('base-card', BaseCard);
 app.component('base-blue-button', BaseBlueButton);
 app.component('base-login-register', LoginRegisterCard);
+app.component('flash-message', FlashMessage);
 
 app.mount('#app')

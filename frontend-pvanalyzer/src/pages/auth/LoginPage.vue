@@ -11,6 +11,7 @@
               id="username"
               placeholder="Email"
               v-model.trim="email"
+              required
             />
           </div>
           <div class="form-control">
@@ -21,6 +22,7 @@
               id="password"
               placeholder="Hasło"
               v-model.trim="password"
+              required
             />
           </div>
         </form>

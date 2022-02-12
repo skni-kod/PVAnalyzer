@@ -2,12 +2,7 @@
   <base-card>
     <div class="containter">
       <div class="header">
-        <img
-          src="./oki.png"
-          height="115"
-          width="90"
-          alt="profile foto"
-        />
+        <img src="./oki.png" height="115" width="90" alt="profile foto" />
         <base-blue-button
           icon="fa-solid fa-pencil"
           style="margin-bottom: auto"
@@ -37,6 +32,7 @@
               type="text"
               id="email"
               v-model.trim="enteredEmail"
+              required
             />
           </div>
           <div class="form-control">
@@ -46,6 +42,7 @@
               type="text"
               id="username"
               v-model.trim="enteredName"
+              required
             />
           </div>
           <div class="buttons-group">
@@ -68,21 +65,30 @@
       </div>
     </div>
   </base-card>
+  <Transition name="slide-fade">
+    <flash-message
+      v-if="showMessage"
+      type="success"
+      title="Success!"
+      desc="Edycja danych zakończona sukcesem."
+    />
+  </Transition>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      userName: '',
-      userEmail: '',
-      enteredName: '',
-      enteredEmail: '',
-      error: '',
+      userName: null,
+      userEmail: null,
+      enteredName: "",
+      enteredEmail: "",
+      error: null,
       isEdit: false,
+      showMessage: false,
     };
   },
-  created(){
+  created() {
     this.userName = this.$store.getters.userName;
     this.userEmail = this.$store.getters.userEmail;
   },
@@ -92,26 +98,52 @@ export default {
       this.enteredName = this.userName;
       this.enteredEmail = this.userEmail;
     },
-    async submitForm(){
+    async submitForm() {
       const actionPayload = {
         email: this.enteredEmail,
-        name: this.enteredName
+        name: this.enteredName,
       };
-
-      try{
-        await this.$store.dispatch('editProfile', actionPayload);
-        const redirectUrl = "/profile";
-        this.$router.push(redirectUrl);
-      }catch(err){
+      try {
+        await this.$store.dispatch("editProfile", actionPayload);
+      } catch (err) {
         this.error = err.message;
       }
-    }
+      if (!this.error) {
+        this.userName = this.enteredName;
+        this.userEmail = this.enteredEmail;
+        this.isEdit = false;
+        this.showMessage = true;
+        setTimeout(() => {
+          this.showMessage = false;
+        }, 3000);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-img{
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+  transition: all 0.7s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(90px);
+  opacity: 0;
+}
+.alert {
+  width: 40%;
+}
+img {
   border-radius: 20%;
 }
 .header {
@@ -155,7 +187,7 @@ img{
   font-weight: bold;
   margin: 10px 0 10px 0;
 }
-.buttons-group{
+.buttons-group {
   display: flex;
   justify-content: space-around;
   /* margin-bottom: 5px; */
