@@ -9,6 +9,7 @@ export default {
 
     let data = {
       name: payload.name,
+      email: payload.email
     };
     axios
       .put(url, data, {
@@ -18,13 +19,13 @@ export default {
         },
       })
       .then((res) => {
-        // console.log(res.data.data);
+        console.log(res.data.data);
         context.commit('setName', {
           userName: res.data.data.name,
         });
-        // context.commit("setEmail", {
-        //   userEmail: res.data.data.email,
-        // });
+        context.commit("setEmail", {
+          userEmail: res.data.data.email,
+        });
       })
       .catch((error) => {
         console.error(error);

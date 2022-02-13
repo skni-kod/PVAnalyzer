@@ -12,50 +12,27 @@
         >
       </div>
       <!-- show -->
-      <div class="content" v-if="!isEdit">
-        <div class="form-control">
-          <label class="label-form" for="email">Email</label>
-          <span>{{ userEmail }}</span>
-        </div>
-        <div class="form-control">
-          <label class="label-form" for="username">Nazwa użytkownika</label>
-          <span>{{ userName }}</span>
-        </div>
-      </div>
+      <show-profile
+        :user-email="userEmail"
+        :user-name="userName"
+        v-if="!isEdit"
+      />
       <!-- edit -->
-      <div v-else>
-        <form @submit.prevent="submitForm">
-          <div class="form-control">
-            <label class="label-form" for="email">Email</label>
-            <input
-              class="input-form"
-              type="text"
-              id="email"
-              v-model.trim="enteredEmail"
-              required
-            />
-          </div>
-          <div class="form-control">
-            <label class="label-form" for="username">Nazwa użytkownika</label>
-            <input
-              class="input-form"
-              type="text"
-              id="username"
-              v-model.trim="enteredName"
-              required
-            />
-          </div>
-          <div class="buttons-group">
-            <base-blue-button @click="toggleEdit">Cancel</base-blue-button>
-            <base-blue-button color="green">Save</base-blue-button>
-          </div>
-        </form>
-      </div>
-      <div class="with-buttons" v-if="!isEdit">
-        <div class="one-line">
+      <edit-profile
+        :user-email="userEmail"
+        :user-name="userName"
+        v-else
+        @cancel-form="showUser"
+        @save-data="saveData"
+      />
+      <div class="with-buttons">
+        <div class="one-line" v-if="!changePassword">
           <label for="">Hasło</label>
-          <base-blue-button>Zmień hasło</base-blue-button>
+          <base-blue-button @click="toggleChangePassword"
+            >Zmień hasło</base-blue-button
+          >
         </div>
+        <change-password v-else @cancel-form="showPassword" />
         <div class="one-line">
           <label for="">Instrukcje</label>
           <base-blue-button link to="/pv-installation"
@@ -69,22 +46,31 @@
     <flash-message
       v-if="showMessage"
       type="success"
-      title="Success!"
+      title="Sukces!"
       desc="Edycja danych zakończona sukcesem."
     />
   </Transition>
 </template>
 
 <script>
+import ShowProfile from "../../components/auth/ShowProfile.vue";
+import EditProfile from "../../components/auth/EditProfile.vue";
+import ChangePassword from "../../components/auth/ChangePassword.vue";
 export default {
+  components: {
+    ShowProfile,
+    EditProfile,
+    ChangePassword,
+  },
   data() {
     return {
       userName: null,
       userEmail: null,
-      enteredName: "",
-      enteredEmail: "",
+      // enteredName: "",
+      // enteredEmail: "",
       error: null,
       isEdit: false,
+      changePassword: false,
       showMessage: false,
     };
   },
@@ -93,24 +79,28 @@ export default {
     this.userEmail = this.$store.getters.userEmail;
   },
   methods: {
+    showUser() {
+      this.isEdit = false;
+    },
+    showPassword() {
+      this.changePassword = false;
+    },
     toggleEdit() {
       this.isEdit = !this.isEdit;
-      this.enteredName = this.userName;
-      this.enteredEmail = this.userEmail;
     },
-    async submitForm() {
-      const actionPayload = {
-        email: this.enteredEmail,
-        name: this.enteredName,
-      };
+    toggleChangePassword() {
+      this.changePassword = !this.changePassword;
+    },
+    async saveData(data) {
+      console.log("data", data);
       try {
-        await this.$store.dispatch("editProfile", actionPayload);
+        await this.$store.dispatch("editProfile", data);
       } catch (err) {
         this.error = err.message;
       }
       if (!this.error) {
-        this.userName = this.enteredName;
-        this.userEmail = this.enteredEmail;
+        this.userName = data.name;
+        this.userEmail = data.email;
         this.isEdit = false;
         this.showMessage = true;
         setTimeout(() => {
@@ -123,10 +113,6 @@ export default {
 </script>
 
 <style scoped>
-/*
-  Enter and leave animations can use different
-  durations and timing functions.
-*/
 .slide-fade-enter-active {
   transition: all 0.7s ease-out;
 }
@@ -190,6 +176,5 @@ img {
 .buttons-group {
   display: flex;
   justify-content: space-around;
-  /* margin-bottom: 5px; */
 }
 </style>

@@ -69,7 +69,8 @@ class AuthController extends Controller
     public function editProfile(Request $request, User $user){
 
         $data = $request->only([
-            'name'
+            'name',
+            'email'
         ]);
         if($user->id != auth()->user()->id){
             return abort(403, 'Unauthorized action');
