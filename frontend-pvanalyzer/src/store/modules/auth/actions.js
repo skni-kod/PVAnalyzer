@@ -3,12 +3,13 @@ import axios from "axios";
 export default {
   async editProfile(context, payload) {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId")
+    const userId = localStorage.getItem("userId");
 
     let url = `http://127.0.0.1:8000/api/users/${userId}`;
 
     let data = {
       name: payload.name,
+      email: payload.email
     };
     axios
       .put(url, data, {
@@ -19,12 +20,37 @@ export default {
       })
       .then((res) => {
         console.log(res.data.data);
-        context.commit("setName", {
+        context.commit('setName', {
           userName: res.data.data.name,
         });
-        // context.commit("setEmail", {
-        //   userEmail: res.data.data.email,
-        // });
+        context.commit("setEmail", {
+          userEmail: res.data.data.email,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  },
+
+  async changePassword(context, payload) {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId")
+
+    let url = `http://127.0.0.1:8000/api/users/${userId}/change-password`;
+
+    let data = {
+      password: payload.password,
+      password_confirmation: payload.confirmation
+    };
+    axios
+      .put(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -62,8 +88,6 @@ export default {
       userId: responseData.user.id,
       userName: responseData.user.name,
     });
-
-    console.log(responseData);
   },
   async login(context, payload) {
     let url = "http://127.0.0.1:8000/api/login";
@@ -97,8 +121,6 @@ export default {
       userName: responseData.user.name,
       userEmail: responseData.user.email,
     });
-
-    console.log(responseData);
   },
   logout(context) {
     localStorage.removeItem("token");

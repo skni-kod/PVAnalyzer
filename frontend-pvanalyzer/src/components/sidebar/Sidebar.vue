@@ -37,11 +37,12 @@ export default {
   },
   data() {
     return {
-      userName: "",
     };
   },
-  created() {
-    this.userName = this.$store.getters.userName;
+  computed:{
+    userName(){
+      return this.$store.getters.userName;
+    }
   },
   methods: {
     logout() {

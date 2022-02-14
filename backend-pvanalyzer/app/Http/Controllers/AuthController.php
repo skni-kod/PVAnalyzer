@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePassword;
 use App\Http\Requests\RegisterUser;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -69,7 +70,8 @@ class AuthController extends Controller
     public function editProfile(Request $request, User $user){
 
         $data = $request->only([
-            'name'
+            'name',
+            'email'
         ]);
         if($user->id != auth()->user()->id){
             return abort(403, 'Unauthorized action');
@@ -84,6 +86,23 @@ class AuthController extends Controller
         return (new UserResource($user))->additional($message);
     }
 
+    public function changePassword(ChangePassword $request, User $user){
+        $data = $request->only([
+            'password'
+        ]);
+
+        if($user->id != auth()->user()->id){
+            return abort(403, 'Unauthorized action');
+        }
+
+        $user->update(['password' => bcrypt($data['password'])]);
+
+        $message = [
+            'status' => true,
+            'message' => 'Password changed successfully'
+        ];
+        return (new UserResource($user))->additional($message);
+    }
     public function logout(Request $request){
         $user = User::findOrFail(auth()->user()->id);
         $user->tokens()->delete();

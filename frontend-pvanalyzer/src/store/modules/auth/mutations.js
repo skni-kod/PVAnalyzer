@@ -7,10 +7,10 @@ export default {
       state.didAutoLogout = false;
     },
     setName(state, payload){
-      state.userName = payload.userName
+      state.userName = payload.userName;
     },
     setEmail(state, payload){
-      state.userName = payload.userName;
+      state.userEmail = payload.userEmail;
     },
     setAutoLogout(state) {
       state.didAutoLogout = true;

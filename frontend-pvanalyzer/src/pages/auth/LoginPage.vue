@@ -11,6 +11,7 @@
               id="username"
               placeholder="Email"
               v-model.trim="email"
+              required
             />
           </div>
           <div class="form-control">
@@ -21,6 +22,7 @@
               id="password"
               placeholder="Hasło"
               v-model.trim="password"
+              required
             />
           </div>
         </form>
@@ -55,6 +57,7 @@ export default {
 
       try {
         await this.$store.dispatch("login", actionPayload);
+        await this.$store.dispatch("getInstallation");
         const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
         console.log("Logowanie zakończone powodzeniem");
         this.$router.replace(redirectUrl);

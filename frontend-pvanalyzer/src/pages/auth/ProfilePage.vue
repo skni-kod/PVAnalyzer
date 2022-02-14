@@ -2,12 +2,7 @@
   <base-card>
     <div class="containter">
       <div class="header">
-        <img
-          src="./oki.png"
-          height="115"
-          width="90"
-          alt="profile foto"
-        />
+        <img src="./oki.png" height="115" width="90" alt="profile foto" />
         <base-blue-button
           icon="fa-solid fa-pencil"
           style="margin-bottom: auto"
@@ -17,101 +12,146 @@
         >
       </div>
       <!-- show -->
-      <div class="content" v-if="!isEdit">
-        <div class="form-control">
-          <label class="label-form" for="email">Email</label>
-          <span>{{ userEmail }}</span>
-        </div>
-        <div class="form-control">
-          <label class="label-form" for="username">Nazwa użytkownika</label>
-          <span>{{ userName }}</span>
-        </div>
-      </div>
+      <show-profile
+        :user-email="userEmail"
+        :user-name="userName"
+        v-if="!isEdit"
+      />
       <!-- edit -->
-      <div v-else>
-        <form @submit.prevent="submitForm">
-          <div class="form-control">
-            <label class="label-form" for="email">Email</label>
-            <input
-              class="input-form"
-              type="text"
-              id="email"
-              v-model.trim="enteredEmail"
-            />
-          </div>
-          <div class="form-control">
-            <label class="label-form" for="username">Nazwa użytkownika</label>
-            <input
-              class="input-form"
-              type="text"
-              id="username"
-              v-model.trim="enteredName"
-            />
-          </div>
-          <div class="buttons-group">
-            <base-blue-button @click="toggleEdit">Cancel</base-blue-button>
-            <base-blue-button color="green">Save</base-blue-button>
-          </div>
-        </form>
-      </div>
-      <div class="with-buttons" v-if="!isEdit">
-        <div class="one-line">
+      <edit-profile
+        :user-email="userEmail"
+        :user-name="userName"
+        v-else
+        @cancel-form="showUser"
+        @save-data="saveData"
+      />
+      <div class="with-buttons">
+        <div class="one-line" v-if="!isChange">
           <label for="">Hasło</label>
-          <base-blue-button>Zmień hasło</base-blue-button>
+          <base-blue-button @click="toggleChangePassword"
+            >Zmień hasło</base-blue-button
+          >
         </div>
+        <change-password
+          v-else
+          @cancel-form="showPassword"
+          @save-data="changePassword"
+        />
         <div class="one-line">
-          <label for="">Instrukcje</label>
+          <label for="">Instalacje</label>
           <base-blue-button link to="/pv-installation"
-            >Moje instrukcje</base-blue-button
+            >Moja instalacja</base-blue-button
           >
         </div>
       </div>
     </div>
   </base-card>
+  <Transition name="slide-fade">
+    <flash-message
+      v-if="changedName"
+      type="success"
+      title="Sukces!"
+      :desc="descMessage"
+    />
+  </Transition>
 </template>
 
 <script>
+import ShowProfile from "../../components/auth/ShowProfile.vue";
+import EditProfile from "../../components/auth/EditProfile.vue";
+import ChangePassword from "../../components/auth/ChangePassword.vue";
 export default {
+  components: {
+    ShowProfile,
+    EditProfile,
+    ChangePassword,
+  },
   data() {
     return {
-      userName: '',
-      userEmail: '',
-      enteredName: '',
-      enteredEmail: '',
-      error: '',
+      userName: null,
+      userEmail: null,
+      error: null,
       isEdit: false,
+      isChange: false,
+      changedName: false,
+      descMessage: "",
     };
   },
-  created(){
+  created() {
     this.userName = this.$store.getters.userName;
     this.userEmail = this.$store.getters.userEmail;
   },
   methods: {
+    showUser() {
+      this.isEdit = false;
+    },
+    showPassword() {
+      this.isChange = false;
+    },
     toggleEdit() {
       this.isEdit = !this.isEdit;
-      this.enteredName = this.userName;
-      this.enteredEmail = this.userEmail;
     },
-    async submitForm(){
-      const actionPayload = {
-        email: this.enteredEmail,
-        name: this.enteredName
-      };
-
-      try{
-        await this.$store.dispatch('editProfile', actionPayload);
-        const redirectUrl = "/profile";
-        this.$router.push(redirectUrl);
-      }catch(err){
+    toggleChangePassword() {
+      this.isChange = !this.isChange;
+    },
+    async saveData(data) {
+      console.log("data", data);
+      try {
+        await this.$store.dispatch("editProfile", data);
+      } catch (err) {
         this.error = err.message;
       }
-    }
+      if (!this.error) {
+        this.userName = data.name;
+        this.userEmail = data.email;
+        this.isEdit = false;
+        this.descMessage = "Dane zostały zmienione.";
+        this.changedName = true;
+        setTimeout(() => {
+          this.changedName = false;
+        }, 3000);
+      }
+    },
+    async changePassword(data) {
+      console.log("Data w rodzicu: ", data);
+      try {
+        await this.$store.dispatch("changePassword", data);
+      } catch (err) {
+        this.error = err.message;
+      }
+      if (!this.error) {
+        this.userName = data.name;
+        this.userEmail = data.email;
+        this.isChange = false;
+        this.descMessage = "Hasło zostały zmienione.";
+        this.changedName = true;
+        setTimeout(() => {
+          this.changedName = false;
+        }, 3000);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-img{
+.slide-fade-enter-active {
+  transition: all 0.7s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(90px);
+  opacity: 0;
+}
+.alert {
+  width: 40%;
+}
+img {
   border-radius: 20%;
 }
 .header {
@@ -155,9 +195,8 @@ img{
   font-weight: bold;
   margin: 10px 0 10px 0;
 }
-.buttons-group{
+.buttons-group {
   display: flex;
   justify-content: space-around;
-  /* margin-bottom: 5px; */
 }
 </style>
