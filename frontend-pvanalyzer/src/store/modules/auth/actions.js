@@ -31,6 +31,31 @@ export default {
         console.error(error);
       });
   },
+
+  async changePassword(context, payload) {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId")
+
+    let url = `http://127.0.0.1:8000/api/users/${userId}/change-password`;
+
+    let data = {
+      password: payload.password,
+      password_confirmation: payload.confirmation
+    };
+    axios
+      .put(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  },
   async register(context, payload) {
     let url = "http://127.0.0.1:8000/api/register";
 

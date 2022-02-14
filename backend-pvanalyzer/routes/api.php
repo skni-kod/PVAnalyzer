@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //User
     Route::get('/users/{user}', [App\Http\Controllers\AuthController::class, 'showUser']);
     Route::put('/users/{user}', [App\Http\Controllers\AuthController::class, 'editProfile']);
+    Route::put('/users/{user}/change-password', [App\Http\Controllers\AuthController::class, 'changePassword']);
     //PVInstallations
     Route::get('/pv-installations', [App\Http\Controllers\PVInstallationController::class, 'index']);
     Route::post('/pv-installations', [App\Http\Controllers\PVInstallationController::class, 'store']);

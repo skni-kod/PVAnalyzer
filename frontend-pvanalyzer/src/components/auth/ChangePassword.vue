@@ -1,24 +1,27 @@
 <template>
-  <form @submit.prevent="submitForm">
+  <Form @submit="submitForm">
     <div class="form-control">
       <label class="label-form" for="email">Hasło</label>
-      <input
+      <Field
         class="input-form"
         type="password"
+        :class="{errorLabel: errorPass}"
         id="password"
-        v-model.trim="enteredPassword"
-        required
+        name="password"
+        rules="required|min:6"
       />
+      <ErrorMessage name="password" />
     </div>
     <div class="form-control">
       <label class="label-form" for="email">Powtórz hasło</label>
-      <input
+      <Field
         class="input-form"
         type="password"
-        id="repeatpassword"
-        v-model.trim="enteredRepeatPass"
-        required
+        id="confirmation"
+        name="confirmation"
+        rules="required|confirmed:@password|min:6|"
       />
+      <ErrorMessage name="confirmation" />
     </div>
     <div class="buttons-group">
       <base-blue-button type="button" @click="cancelClicked"
@@ -26,29 +29,75 @@
       >
       <base-blue-button color="green">Save</base-blue-button>
     </div>
-  </form>
+  </Form>
 </template>
 
 <script>
+import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
+// import { max } from "@vee-validate/rules";
+defineRule("required", (value) => {
+  if (!value || !value.length) {
+    return "To pole jest wymagane";
+  }
+  return true;
+});
+defineRule('min', (value, [limit]) => {
+  // The field is empty so it should pass
+  if (!value || !value.length) {
+    return true;
+  }
+  if (value.length < limit) {
+    return `To pole musi mieć conajmniej ${limit} znaków`;
+  }
+  return true;
+});
+defineRule("confirmed", (value, [target]) => {
+  if (value === target) {
+    return true;
+  }
+  return "Hasła muszą być takie same";
+});
+
 export default {
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
   emits: ["cancel-form", "save-data"],
   data() {
     return {
       enteredPassword: "",
       enteredRepeatPass: "",
+      errorPass: null,
     };
+  },
+  computed:{
+    
   },
   methods: {
     cancelClicked() {
       this.$emit("cancel-form");
+    },
+    submitForm(values) {
+      console.log('values to:', values);
+      console.log(JSON.stringify(values, null, 2));
+
+      this.$emit('save-data', values);
     },
   },
 };
 </script>
 
 <style scoped>
-form{
+form {
   margin-bottom: 10px;
+}
+.error-label{
+  background-color: rgb(238, 123, 123);
+}
+.form-control span {
+  color: red;
 }
 .container {
   margin-left: 20px;

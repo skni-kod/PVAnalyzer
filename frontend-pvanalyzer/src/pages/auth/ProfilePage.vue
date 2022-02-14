@@ -26,13 +26,17 @@
         @save-data="saveData"
       />
       <div class="with-buttons">
-        <div class="one-line" v-if="!changePassword">
+        <div class="one-line" v-if="!isChange">
           <label for="">Hasło</label>
           <base-blue-button @click="toggleChangePassword"
             >Zmień hasło</base-blue-button
           >
         </div>
-        <change-password v-else @cancel-form="showPassword" />
+        <change-password
+          v-else
+          @cancel-form="showPassword"
+          @save-data="changePassword"
+        />
         <div class="one-line">
           <label for="">Instrukcje</label>
           <base-blue-button link to="/pv-installation"
@@ -44,10 +48,10 @@
   </base-card>
   <Transition name="slide-fade">
     <flash-message
-      v-if="showMessage"
+      v-if="changedName"
       type="success"
       title="Sukces!"
-      desc="Edycja danych zakończona sukcesem."
+      :desc="descMessage"
     />
   </Transition>
 </template>
@@ -66,12 +70,11 @@ export default {
     return {
       userName: null,
       userEmail: null,
-      // enteredName: "",
-      // enteredEmail: "",
       error: null,
       isEdit: false,
-      changePassword: false,
-      showMessage: false,
+      isChange: false,
+      changedName: false,
+      descMessage: "",
     };
   },
   created() {
@@ -83,13 +86,13 @@ export default {
       this.isEdit = false;
     },
     showPassword() {
-      this.changePassword = false;
+      this.isChange = false;
     },
     toggleEdit() {
       this.isEdit = !this.isEdit;
     },
     toggleChangePassword() {
-      this.changePassword = !this.changePassword;
+      this.isChange = !this.isChange;
     },
     async saveData(data) {
       console.log("data", data);
@@ -102,9 +105,28 @@ export default {
         this.userName = data.name;
         this.userEmail = data.email;
         this.isEdit = false;
-        this.showMessage = true;
+        this.descMessage = "Dane zostały zmienione.";
+        this.changedName = true;
         setTimeout(() => {
-          this.showMessage = false;
+          this.changedName = false;
+        }, 3000);
+      }
+    },
+    async changePassword(data) {
+      console.log("Data w rodzicu: ", data);
+      try {
+        await this.$store.dispatch("changePassword", data);
+      } catch (err) {
+        this.error = err.message;
+      }
+      if (!this.error) {
+        this.userName = data.name;
+        this.userEmail = data.email;
+        this.isChange = false;
+        this.descMessage = "Hasło zostały zmienione.";
+        this.changedName = true;
+        setTimeout(() => {
+          this.changedName = false;
         }, 3000);
       }
     },

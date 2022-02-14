@@ -18,7 +18,8 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
-app.use(VueAxios, axios)
+app.use(VueAxios, axios);
+
 
 app.component('base-card', BaseCard);
 app.component('base-blue-button', BaseBlueButton);
