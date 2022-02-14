@@ -38,9 +38,9 @@
           @save-data="changePassword"
         />
         <div class="one-line">
-          <label for="">Instrukcje</label>
+          <label for="">Instalacje</label>
           <base-blue-button link to="/pv-installation"
-            >Moje instrukcje</base-blue-button
+            >Moja instalacja</base-blue-button
           >
         </div>
       </div>

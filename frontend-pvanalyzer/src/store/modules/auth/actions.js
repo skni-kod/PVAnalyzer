@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   async editProfile(context, payload) {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId")
+    const userId = localStorage.getItem("userId");
 
     let url = `http://127.0.0.1:8000/api/users/${userId}`;
 

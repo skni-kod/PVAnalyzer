@@ -57,6 +57,7 @@ export default {
 
       try {
         await this.$store.dispatch("login", actionPayload);
+        await this.$store.dispatch("getInstallation");
         const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
         console.log("Logowanie zakończone powodzeniem");
         this.$router.replace(redirectUrl);
