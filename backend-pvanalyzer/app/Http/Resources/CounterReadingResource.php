@@ -19,7 +19,9 @@ class CounterReadingResource extends JsonResource
             'date' => $this->date,
             'active_energy_consumed' => $this->active_energy_consumed,
             'reactive_energy_consumed' => $this->reactive_energy_consumed,
-            'energy_to_recover' => $this->energy_to_recover
+            'energy_to_recover' => $this->energy_to_recover,
+            'balance' => $this->balance,
+            'mounth' => isset($this->month) ? $this->month : ""
         ];
     }
 }

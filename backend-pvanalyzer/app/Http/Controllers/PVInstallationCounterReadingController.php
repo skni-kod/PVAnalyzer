@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCounterReading;
 use App\Http\Resources\CounterReadingResource;
+use App\Services\CounterReadingService;
+
 use App\Models\CounterReading;
 use App\Models\PVInstallation;
+use Carbon\Carbon as Carbon;
+// use Illuminate\Support\Carbon;
+// CarbonCarbon
 use Illuminate\Http\Request;
 
 class PVInstallationCounterReadingController extends Controller
 {
+    protected $counterReadingService;
+
+    public function __construct(CounterReadingService $counterReadingService)
+    {
+        $this->counterReadingService = $counterReadingService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,9 +28,22 @@ class PVInstallationCounterReadingController extends Controller
      */
     public function index(PVInstallation $pVInstallation)
     {
-        return CounterReadingResource::collection(CounterReading::where('p_v_installation_id', $pVInstallation->id)->paginate());
+        $result = $this->counterReadingService->getAll($pVInstallation);
+        // $counterReadings = CounterReading::where('p_v_installation_id', $pVInstallation->id)->get();
+        // $one = $counterReadings[1];
+        return $result;
+        // $date = Carbon::createFromFormat('Y-m-d', $one['date']);
+   
+        // $monthName = $date->format('F');
+        // $one['month'] = $monthName;
+        // // ->format('m');
+        // return $one;
+        // return CounterReading::where('p_v_installation_id', $pVInstallation->id)->get();
     }
-
+    public function latest(PVInstallation $pVInstallation){
+        $result = $this->counterReadingService->latest($pVInstallation);
+        return $result;
+    }
     /**
      * Store a newly created resource in storage.
      *
