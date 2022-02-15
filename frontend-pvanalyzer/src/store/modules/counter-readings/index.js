@@ -5,13 +5,13 @@ import getters from './getters.js';
 export default {
     namespaced: true,
     state(){
-        return{
-            startWorking: null,
-            powerInstallation: null,
-            idInstallation: null
+        return {
+            labels: [],
+            readings: [],
+            balance: null
         };
     },
     mutations,
     actions,
-    getters
+    getters,
 };
