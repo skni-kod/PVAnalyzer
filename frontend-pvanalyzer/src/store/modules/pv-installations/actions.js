@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default {
-  async getInstallation(context) {
+  async loadInstallation(context) {
     const token = localStorage.getItem("token");
 
     let url = `http://127.0.0.1:8000/api/pv-installations`;

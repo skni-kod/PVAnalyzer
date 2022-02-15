@@ -39,10 +39,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/pv-installations/{pVInstallation}', [App\Http\Controllers\PVInstallationController::class, 'update']);
     Route::delete('/pv-installations/{pVInstallation}', [App\Http\Controllers\PVInstallationController::class, 'destroy']);
     //Counter Readings
+    Route::get('/pv-installations/{pVInstallation}/counter-readings/latest', [App\Http\Controllers\PVInstallationCounterReadingController::class, 'latest']);
     Route::apiResource('pv-installations.counter-readings', PVInstallationCounterReadingController::class)->parameters([
         'pv-installations' => 'pVInstallation',
         'counter-readings' => 'counterReading'
     ]);
+    
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

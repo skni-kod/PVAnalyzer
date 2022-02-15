@@ -14,6 +14,6 @@ class CounterReadingTableSeeder extends Seeder
      */
     public function run()
     {
-        CounterReading::factory()->count(10)->create();
+        CounterReading::factory()->count(20)->create();
     }
 }

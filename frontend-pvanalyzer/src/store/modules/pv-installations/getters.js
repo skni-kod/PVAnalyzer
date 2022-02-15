@@ -4,5 +4,8 @@ export default{
     },
     powerInstallation(state){
         return state.powerInstallation;
+    },
+    installationId(state){
+        return state.idInstallation;
     }
 };
