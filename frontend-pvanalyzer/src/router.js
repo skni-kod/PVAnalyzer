@@ -9,7 +9,7 @@ import store from './store/index.js';
 
 // import ChangePassword from './components/auth/ChangePassword.vue'
 // import Chart from './components/charts/ChartContainer.vue';
-import Chart from './components/charts/Chart.vue';
+import Chart from './components/charts/LineChartCard.vue';
 
 const router = createRouter({
     history: createWebHistory(),

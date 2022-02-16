@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 80%; text-allign: center; height: 500px">
-    <canvas id="planet-chart"></canvas>
+  <div style="text-allign: center">
+    <canvas id="planet-chart" v-show="!loading"></canvas>
   </div>
 </template>
 
@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       // planetChartData: planetChartData,
+      loading: true,
       allLabels: [],
       allRecover: [],
       allActive: [],
@@ -28,57 +29,71 @@ export default {
           datasets: [
             {
               label: "Do odzyskania",
+              fill: false,
               data: [],
               // backgroundColor: "rgba(81, 52,132,.5)",
               borderColor: "#21b784",
-              borderWidth: 3,
+              borderWidth: 1.5,
+              lineTension: 0.15,
             },
             {
               label: "Pobrana",
+              fill: false,
               data: [],
               // backgroundColor: "rgba(211, 38, 38,.5)",
               borderColor: "#c90000",
-              borderWidth: 3,
+              borderWidth: 1.5,
+              lineTension: 0.15,
             },
             {
               label: "Oddana",
+              fill: false,
               data: [],
               // backgroundColor: "rgba(82, 69, 69,.5)",
               borderColor: "#292828",
-              borderWidth: 3,
+              borderWidth: 1.5,
+              lineTension: 0.15,
             },
           ],
         },
         options: {
-            title: {
-            display: true,
-            text: 'Custom Chart Title'
-        }
-  
-        //   responsive: true,
-        //   title: {
-        //     display: true,
-        //     text: "Kurwy Kurwy",
-        //   },
-
-        //   lineTension: 1,
-        //   scales: {
-        //     y:{
-        //       display: true,
-        // title: {
-        //   display: true,
-        //   text: 'Value',
-        //   color: '#191',
-        //     }},
-        //     yAxes: [
-        //       {
-        //         ticks: {
-        //           beginAtZero: true,
-        //           padding: 25,
-        //         },
-        //       },
-        //     ],
+          responsive: true,
+          legend: {
+            labels: {
+              fontSize: 16,
+            },
+          },
+          // title: {
+          //   display: true,
+          //   text: "Ostatnie odczyty",
+          //   fontSize: 24
           // },
+
+          lineTension: 1,
+          scales: {
+            xAxes: [
+              {
+                scaleLabel: {
+                  display: true,
+                  labelString: "Data odczytu",
+                  fontSize: 20,
+                },
+              },
+            ],
+            yAxes: [
+              {
+                scaleLabel: {
+                  display: true,
+                  labelString: "Energia [kWh]",
+                  fontSize: 20,
+                },
+                ticks: {
+                  beginAtZero: true,
+                  padding: 15,
+                },
+              },
+            ],
+          },
         },
       },
     };
@@ -104,6 +119,7 @@ export default {
       } catch (error) {
         this.error = error.message || "Something went wrong!";
       }
+      this.loading = false;
     },
     getDataToChart() {
       const length = this.allRecover.length;
