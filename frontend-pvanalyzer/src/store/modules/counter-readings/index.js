@@ -7,7 +7,10 @@ export default {
     state(){
         return {
             labels: [],
-            readings: [],
+            active: [],
+            reactive: [],
+            recover: [],
+            // readings: [],
             balance: null
         };
     },

@@ -2,12 +2,8 @@ import axios from "axios";
 
 export default {
   async loadCounterReadings(context) {
-      console.log('Context: ', context);
-    //   console.log('46: ', context.getters.myInstallation);
-      console.log('47: ', context.rootGetters['pVInstallation/installationId']);
-    //   console.log(context.rootGetters['pVInstallation/installationId']);
+
     const id = 9;
-    console.log('Wbiło?', id);
     const token = localStorage.getItem("token");
 
     const url = `http://127.0.0.1:8000/api/pv-installations/${id}/counter-readings`;
@@ -19,16 +15,30 @@ export default {
       },
     })
     .then((res)=> {
-        console.log(res.data.data[1]);
-        const data = res.data.data[1];
+        const data = res.data.data;
         const labels = [];
-        // const readings = [];
+        const active = [];
+        const reactive = [];
+        const recover = [];
+        const balance = res.data.total;
+
         for (const i in data){
             labels.push(data[i].date);
+            active.push(data[i].active_energy_consumed);
+            reactive.push(data[i].reactive_energy_consumed);
+            recover.push(data[i].energy_to_recover);
         }
+        
+        context.commit('setLabels', labels);
+        context.commit('setActive', active);
+        context.commit('setReactive', reactive);
+        context.commit('setRecover', recover);
+        context.commit('setBalance', balance);
+        console.log('pobrano Odczyty');
     })
     .catch((error) => {
         console.error(error);
     });
+
   },
 };

@@ -9,5 +9,14 @@ export default{
     },
     setBalance(state, payload){
         state.balance = payload;
+    },
+    setActive(state, payload){
+        state.active = payload;
+    },
+    setReactive(state, payload){
+        state.reactive = payload;
+    },
+    setRecover(state, payload){
+        state.recover = payload;
     }
 }
