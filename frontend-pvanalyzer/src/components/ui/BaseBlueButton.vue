@@ -44,7 +44,7 @@ a {
   color: white;
   border: none;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   padding: 10px 15px;
 }
 button svg,

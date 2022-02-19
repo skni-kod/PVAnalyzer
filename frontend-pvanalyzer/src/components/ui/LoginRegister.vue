@@ -72,9 +72,15 @@ span{
 }
 
 .logo {
-  display: block;
+  /* display: block;
   text-align: center;
-  margin: auto;
+  margin: auto; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* height: 100%; */
+  /* padding-bottom: 37px; */
 }
 .logo h1 {
   color: #ffffff;

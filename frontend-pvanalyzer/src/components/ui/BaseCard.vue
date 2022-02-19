@@ -28,7 +28,6 @@ export default {
 <style scoped>
 .card {
   min-width: 280px;
-  /* border-radius: 12px; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   margin-right: 80px;
   margin-top: 30px;
