@@ -1,4 +1,7 @@
 export default{
+    setReadings(state, payload){
+        state.counterReadings = payload;
+    },
     setCounterReadingStates(state, payload){
         state.labels = payload.labels;
         state.readings = payload.readings;

@@ -6,6 +6,7 @@ export default {
     namespaced: true,
     state(){
         return {
+            counterReadings:[],
             labels: [],
             active: [],
             reactive: [],

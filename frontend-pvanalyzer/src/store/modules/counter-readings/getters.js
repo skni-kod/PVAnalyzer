@@ -1,4 +1,7 @@
 export default{
+    counterReadings(state){
+        return state.counterReadings;
+    },
     labels(state){
         return state.labels;
     },
