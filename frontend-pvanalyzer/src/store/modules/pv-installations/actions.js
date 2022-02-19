@@ -14,12 +14,12 @@ export default {
         },
       })
       .then((res) => {
-        console.log(res.data.data[0].power);
         context.commit('setPVIntallationStates', {
             start: res.data.data[0].start,
             power: res.data.data[0].power,
             id: res.data.data[0].id,
           });
+          // context.commit('setTest', res.data.data[0].id, {root: true})
       })
       .catch((error) => {
         console.error(error);

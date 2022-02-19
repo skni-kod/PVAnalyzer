@@ -6,8 +6,12 @@ export default {
     namespaced: true,
     state(){
         return {
+            counterReadings:[],
             labels: [],
-            readings: [],
+            active: [],
+            reactive: [],
+            recover: [],
+            // readings: [],
             balance: null
         };
     },

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCounterReading;
 use App\Http\Resources\CounterReadingResource;
+use App\Http\Resources\CounterReadingCollection;
 use App\Services\CounterReadingService;
 
 use App\Models\CounterReading;
@@ -40,9 +41,9 @@ class PVInstallationCounterReadingController extends Controller
         // return $one;
         // return CounterReading::where('p_v_installation_id', $pVInstallation->id)->get();
     }
-    public function latest(PVInstallation $pVInstallation){
-        $result = $this->counterReadingService->latest($pVInstallation);
-        return $result;
+    public function monthly(PVInstallation $pVInstallation){
+        $result = $this->counterReadingService->monthly($pVInstallation);
+        return new CounterReadingCollection($result);
     }
     /**
      * Store a newly created resource in storage.

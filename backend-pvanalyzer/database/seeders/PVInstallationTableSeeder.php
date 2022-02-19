@@ -14,6 +14,6 @@ class PVInstallationTableSeeder extends Seeder
      */
     public function run()
     {
-        PVInstallation::factory()->count(5)->create();
+        PVInstallation::factory()->count(1)->create();
     }
 }
