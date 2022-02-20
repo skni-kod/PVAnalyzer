@@ -1,19 +1,27 @@
 <template>
-  <div class="container" v-if="!loading">
+  <div class="container" v-if="!isLoading">
     <line-chart-card></line-chart-card>
     <bar-chart-card :balance="balance"></bar-chart-card>
     <last-readings-table :tableData="tableData" ></last-readings-table>
     
   </div>
-  <span v-else>Ładowanie</span>
+  <div v-else>
+    <loading v-model:active="isLoading"
+                 :can-cancel="true"
+                 :opacity=1 />
+  </div>
 </template>
 
 <script>
+import Loading from 'vue-loading-overlay';
+    import 'vue-loading-overlay/dist/vue-loading.css';
+
+
 import LastReadingsTable from '../../components/counter-readings/ReadingsListContainer.vue';
 import LineChartCard from '../../components/counter-readings/charts/LineChartCard.vue'
 import BarChartCard from '../../components/counter-readings/charts/BarChardCard.vue'
 export default {
-  components: { LineChartCard, BarChartCard, LastReadingsTable},
+  components: { LineChartCard, BarChartCard, LastReadingsTable, Loading},
   data() {
     return {
       allLabels: [], //wszystkie daty z bazy
@@ -21,7 +29,7 @@ export default {
       allReactive: [], //wszystkie odczyty oddane do sieci
       calculatedMonthlyReadings: [],
       monthlyLabels: [],
-      loading: true,
+      isLoading: true,
     };
   },
   computed: {
@@ -77,7 +85,7 @@ export default {
       } catch (error) {
         this.error = error.message || "Something went wrong!";
       }
-      this.loading = false;
+      this.isLoading = false;
     },
     getProperties() {
       for (const reading in this.allReadings) {
