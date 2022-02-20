@@ -22,8 +22,8 @@ export default {
     };
   },
   created(){
-    this.power = this.$store.getters.powerInstallation;
-    this.dateStart = this.$store.getters.startWorking;
+    this.power = this.$store.getters['pVInstallation/powerInstallation'];
+    this.dateStart = this.$store.getters['pVInstallation/startWorking'];
   }
 };
 </script>
