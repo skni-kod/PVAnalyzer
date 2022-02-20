@@ -21,7 +21,7 @@
       <td>{{ data.balance }} kWh</td>
     </tr>
   </table>
-      <base-blue-button color="green">Dodaj nowy odczyt</base-blue-button>
+      <base-blue-button link to='/add-reading' color="green">Dodaj nowy odczyt</base-blue-button>
     </div>
   </base-card>
 </template>
