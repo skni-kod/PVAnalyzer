@@ -29,4 +29,9 @@ class PVInstallation extends Model
     {
         return $this->hasMany(CounterReading::class);
     }
+
+    public function getMultiplier()
+    {
+        return $this->power <= 10 ? 0.8 : 0.7;
+    }
 }

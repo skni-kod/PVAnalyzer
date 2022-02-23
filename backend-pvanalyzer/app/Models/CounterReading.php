@@ -13,7 +13,8 @@ class CounterReading extends Model
         'date',
         'active_energy_consumed',
         'reactive_energy_consumed',
-        'energy_to_recover'
+        'energy_to_recover',
+        'balance'
     ];
     
     /**
