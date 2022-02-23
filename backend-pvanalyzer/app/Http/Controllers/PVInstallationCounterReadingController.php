@@ -10,8 +10,6 @@ use App\Services\CounterReadingService;
 use App\Models\CounterReading;
 use App\Models\PVInstallation;
 use Carbon\Carbon as Carbon;
-// use Illuminate\Support\Carbon;
-// CarbonCarbon
 use Illuminate\Http\Request;
 
 class PVInstallationCounterReadingController extends Controller
@@ -57,13 +55,12 @@ class PVInstallationCounterReadingController extends Controller
             'date',
             'active_energy_consumed',
             'reactive_energy_consumed',
-            'energy_to_recover' //TODO: this value must be calc!!!
+            // 'energy_to_recover' //TODO: this value must be calc!!!
         ]);
-        $message = [
-            'status' => true,
-            'message' => 'Counter Reading created successfully'
-        ];
-        return (new CounterReadingResource($pVInstallation->counterReadings()->create($data)))->additional($message);
+
+        $result =  $this->counterReadingService->saveCounterReadingData($data, $pVInstallation);
+
+        return $result;
     }
 
     /**

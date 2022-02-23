@@ -35,5 +35,13 @@ class CounterReadingService{
 
         return $counterReadings;
     }
+
+    public function saveCounterReadingData($data, PVInstallation $pVInstallation){
+        $requestData = $data;
+        $requestData['energy_to_recover'] = round($requestData['reactive_energy_consumed'] * $pVInstallation->getMultiplier(), 2);
+        $requestData['balance'] = round($requestData['energy_to_recover'] - $requestData['active_energy_consumed'], 2);
+        
+        return new CounterReadingResource($pVInstallation->counterReadings()->create($requestData));
+    }
 }
 ?>
