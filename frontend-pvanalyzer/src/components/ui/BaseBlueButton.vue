@@ -40,6 +40,7 @@ button,
 a {
   text-decoration: none;
   font-family: "Lato", sans-serif;
+  text-align: center;
   background-color: #0934a5;
   color: white;
   border: none;
