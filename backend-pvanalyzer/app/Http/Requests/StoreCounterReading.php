@@ -26,7 +26,21 @@ class StoreCounterReading extends FormRequest
         return [
             'date' => 'required|date',
             'active_energy_consumed' => 'required|numeric',
-            'reactive_energy_consumed'=> 'required|numeric',
+            'reactive_energy_consumed' => 'required|numeric',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'date.date' => 'Data musi mieć odpowiedni format',
+            'active_energy_consumed.numeric' => 'Energia pobrana musi być wartością liczbową',
+            'reactive_energy_consumed.numeric' => 'Energia oddana musi być wartością liczbową',
         ];
     }
 }
