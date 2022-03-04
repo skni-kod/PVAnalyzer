@@ -5,8 +5,8 @@
         <i class="fa-solid fa-bolt" />
         <span v-if="collapsed"> </span>
         <span v-else style="margin-left: 10px">PVAnalyzer</span>
-      </h1></router-link
-    >
+      </h1></router-link>
+      
     <SidebarLink to="/dashboard" icon="fas fa-home-alt">Home</SidebarLink>
     <SidebarLink to="/pv-installation" icon="fa-solid fa-solar-panel"
       >Moja instalacja</SidebarLink
@@ -65,6 +65,8 @@ export default {
 h1 {
   font-size: 24px;
   color: white;
+  padding: 0 0.4em 0 0.4em;
+
 }
 a{
   text-decoration: none;

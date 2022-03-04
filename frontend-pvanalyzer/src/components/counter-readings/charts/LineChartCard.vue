@@ -1,38 +1,59 @@
 <template>
-  <base-card>
+  <!-- <base-card> -->
     <div class="container">
       <div class="header">
         <h1>Ostatnie odczyty</h1>
         <div class="right-block">
           <a href="">Zobacz raport</a>
+          <span v-if="isSaved" style="color: green">
+          <i class="fa-solid fa-arrow-up" />
+          <span class="value"> {{ actualBalance }} kWh</span>
+        </span>
+        <span v-else style="color: red">
+          <i class="fa-solid fa-arrow-down" />
+          <span class="value"> {{ actualBalance }} kWh</span>
+        </span>
+<!-- 
+
           <span
             ><i class="fa-solid fa-arrow-up" />
-            <span class="value"> 50 kWh</span></span
-          >
+            <span class="value"> {{ actualBalance }} kWh</span></span
+          > -->
         </div>
       </div>
       <LineChart />
     </div>
-  </base-card>
+  <!-- </base-card> -->
 </template>
 
 <script>
 import LineChart from "./PlanetChart.vue";
 export default {
   components: { LineChart },
+  props: {
+    actualBalance: Number,
+  },
+  computed: {
+    isSaved(){
+      return this.actualBalance >= 0 ? true : false;
+    }
+  }
 };
 </script>
 
 <style scoped>
+.container{
+  display: flex;
+  flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+
+}
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-right: 25px;
-  margin-left: 40px;
 }
 .right-block {
-  /* padding: 10px; */
   padding-bottom: 10px;
   display: flex;
   flex-direction: column;
@@ -43,6 +64,8 @@ export default {
 .right-block span {
   font-size: 30px;
   font-weight: bold;
-  color: green;
+}
+.right-block span span {
+  margin-left: 5px;
 }
 </style>

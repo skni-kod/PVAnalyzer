@@ -1,15 +1,16 @@
 <template>
-
-  <div class="container">
-    <div class="strip" :style="{ backgroundColor: isSuccess }"></div>
-    <div class="content">
-      <div class="title">
-        <i :class="icon" :style="{ color: isSuccess }" />
-        <h1>{{ title }}</h1>
+  <!-- <Transition name="slide-fade"> -->
+    <div class="container">
+      <div class="strip" :style="{ backgroundColor: isSuccess }"></div>
+      <div class="content">
+        <div class="title">
+          <i :class="icon" :style="{ color: isSuccess }" />
+          <h1>{{ title }}</h1>
+        </div>
+        <p>{{ desc }}</p>
       </div>
-      <p>{{ desc }}</p>
     </div>
-  </div>
+  <!-- </Transition> -->
 </template>
 
 <script>
@@ -52,6 +53,23 @@ export default {
 </script>
 
 <style scoped>
+.slide-fade-enter-active {
+  transition: all 1s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(90px);
+  opacity: 0;
+}
+.alert {
+  width: 40%;
+}
+
 
 .container {
   width: fit-content;

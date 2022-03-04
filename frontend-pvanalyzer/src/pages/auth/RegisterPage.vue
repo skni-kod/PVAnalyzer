@@ -126,12 +126,9 @@ export default {
     },
     async submitForm() {
       this.initErrors();
-      console.log("form rejestracji wysłany");
-      console.log(this.errors);
       this.valitation();
 
       if (this.formIsOk) {
-        console.log('walidacja przebiegła poprawnie');
         const actionPayload = {
           email: this.email,
           name: this.userName,

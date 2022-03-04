@@ -1,6 +1,6 @@
 <template>
-  <div >
-    <canvas id="bar-chart" v-show="!loading" style="text-allign: center"></canvas>
+  <div style="text-align: center" >
+    <canvas id="bar-chart" v-show="!loading" ></canvas>
   </div>
 </template>
 

@@ -1,43 +1,46 @@
 <template>
-  <base-card>
-    <div class="container">
-      <div class="header">
-        <h1>Lista odczytów</h1>
-        <span>Zobacz listę</span>
-      </div>
-      <table>
-    <tr>
-      <th>Data</th>
-      <th>Pobrana</th>
-      <th>Oddana</th>
-      <th>Do odzyskania</th>
-      <th>Bilans</th>
-    </tr>
-    <tr v-for="data in tableData" :key="data.id">
-      <td>{{ data.date }}</td>
-      <td>{{ data.activeEnergyConsumed }} kWh</td>
-      <td>{{ data.reactiveEnergyConsumed }} kWh</td>
-      <td>{{ data.energyToRecover }} kWh</td>
-      <td>{{ data.balance }} kWh</td>
-    </tr>
-  </table>
-      <base-blue-button link to='/add-reading' color="green">Dodaj nowy odczyt</base-blue-button>
+  <!-- <base-card> -->
+  <div class="container">
+    <div class="header">
+      <h1>Lista odczytów</h1>
+      <span>Zobacz listę</span>
     </div>
-  </base-card>
+    <table>
+      <tr>
+        <th>Data</th>
+        <th>Pobrana</th>
+        <th>Oddana</th>
+        <th>Do odzyskania</th>
+        <th>Bilans</th>
+      </tr>
+      <tr v-for="data in tableData" :key="data.id">
+        <td>{{ data.date }}</td>
+        <td>{{ data.activeEnergyConsumed }} kWh</td>
+        <td>{{ data.reactiveEnergyConsumed }} kWh</td>
+        <td>{{ data.energyToRecover }} kWh</td>
+        <td>{{ data.balance }} kWh</td>
+      </tr>
+    </table>
+    <base-blue-button link to="/add-reading" color="green"
+      >Dodaj nowy odczyt</base-blue-button
+    >
+  </div>
+  <!-- </base-card> -->
 </template>
 
 <script>
 export default {
-  props:{
-    tableData: Array
-  }
+  props: {
+    tableData: Array,
+  },
 };
 </script>
 
 <style scoped>
-.container{
+.container {
   display: flex;
   flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 .header {
   display: flex;
@@ -51,12 +54,15 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
-th, td{
+th,
+td {
   padding: 10px;
   text-align: center;
 }
-th{
+th {
   font-weight: bold;
 }
-tr:nth-child(even) {background-color: #f2f2f2;}
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 </style>
