@@ -9,7 +9,7 @@ export default {
 
     let data = {
       name: payload.name,
-      email: payload.email
+      email: payload.email,
     };
     axios
       .put(url, data, {
@@ -19,8 +19,7 @@ export default {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
-        context.commit('setName', {
+        context.commit("setName", {
           userName: res.data.data.name,
         });
         context.commit("setEmail", {
@@ -34,13 +33,13 @@ export default {
 
   async changePassword(context, payload) {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId")
+    const userId = localStorage.getItem("userId");
 
     let url = `http://127.0.0.1:8000/api/users/${userId}/change-password`;
 
     let data = {
       password: payload.password,
-      password_confirmation: payload.confirmation
+      password_confirmation: payload.confirmation,
     };
     axios
       .put(url, data, {
@@ -50,14 +49,16 @@ export default {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
+        //zmiana w vuex
+        console.log(res);
       })
       .catch((error) => {
-        console.error(error);
+        const errors = error.response;
+        console.error(errors);
       });
   },
   async register(context, payload) {
-    let url = "http://127.0.0.1:8000/api/register";
+    const url = "http://127.0.0.1:8000/api/register";
 
     const response = await fetch(url, {
       method: "POST",
@@ -90,37 +91,37 @@ export default {
     });
   },
   async login(context, payload) {
-    let url = "http://127.0.0.1:8000/api/login";
+    const url = "http://127.0.0.1:8000/api/login";
 
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: payload.email,
-        password: payload.password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const data = {
+      email: payload.email,
+      password: payload.password,
+    };
 
-    const responseData = await response.json();
+    await axios
+      .post(url, data, {
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+      .catch((error) => {
+        const responseError = error.response;
+        context.commit("setErrors", {
+          errors: responseError.statusText,
+        });
+      })
+      .then((res) => {
+        const responseData = res.data;
+        localStorage.setItem("token", responseData.token);
+        localStorage.setItem("userId", responseData.user.id);
 
-    if (!response.ok) {
-      const error = new Error(
-        responseData.message || "Failed to authenticate. Check your login data."
-      );
-      throw error;
-    }
-
-    localStorage.setItem("token", responseData.token);
-    localStorage.setItem("userId", responseData.user.id);
-
-    context.commit("setUser", {
-      token: responseData.token,
-      userId: responseData.user.id,
-      userName: responseData.user.name,
-      userEmail: responseData.user.email,
-    });
+        context.commit("setUser", {
+          token: responseData.token,
+          userId: responseData.user.id,
+          userName: responseData.user.name,
+          userEmail: responseData.user.email,
+        });
+      });
   },
   logout(context) {
     localStorage.removeItem("token");
