@@ -1,41 +1,49 @@
 <template>
-  <base-login-register>
-    <div class="box">
-      <div class="content">
-        <form @submit.prevent="siema">
-          <div class="form-control">
-            <label class="label-form" for="username">Nazwa użytkownika</label>
-            <input
-              class="input-form"
-              type="text"
-              id="username"
-              placeholder="Email"
-              v-model.trim="email"
-              required
-            />
-          </div>
-          <div class="form-control">
-            <label class="label-form" for="password">Hasło </label>
-            <input
-              class="input-form"
-              type="password"
-              id="password"
-              placeholder="Hasło"
-              v-model.trim="password"
-              required
-            />
-          </div>
-        </form>
+  <!-- <div> -->
+    <base-dialog :show="isError" @close="handleError" title="Error">
+      {{ errorMessage }}
+    </base-dialog>
+    <base-login-register>
+      <div class="box">
+        <div class="content">
+          <form @submit.prevent="siema">
+            <div class="form-control">
+              <label class="label-form" for="username">Nazwa użytkownika</label>
+              <input
+                class="input-form"
+                type="text"
+                id="username"
+                placeholder="Email"
+                v-model.trim="email"
+                required
+              />
+            </div>
+            <div class="form-control">
+              <label class="label-form" for="password">Hasło </label>
+              <input
+                class="input-form"
+                type="password"
+                id="password"
+                placeholder="Hasło"
+                v-model.trim="password"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <div class="submit-button">
+          <button type="submit" @click="submitForm">Zaloguj się</button>
+        </div>
       </div>
-      <div class="submit-button">
-        <button type="submit" @click="submitForm">Zaloguj się</button>
-      </div>
-    </div>
 
-    <div class="bottom-text">
-      <span>Nie masz konta? <router-link to="/register">Załóż konto</router-link></span>
-    </div>
-  </base-login-register>
+      <div class="bottom-text">
+        <span
+          >Nie masz konta?
+          <router-link to="/register">Załóż konto</router-link></span
+        >
+      </div>
+    </base-login-register>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -46,6 +54,14 @@ export default {
       password: "",
       error: null,
     };
+  },
+  computed: {
+    isError() {
+      return this.$store.getters.errors == "" ? false : true;
+    },
+    errorMessage() {
+      return this.$store.getters.errors;
+    },
   },
 
   methods: {
@@ -59,13 +75,16 @@ export default {
         await this.$store.dispatch("login", actionPayload);
         await this.$store.dispatch("pVInstallation/loadInstallation");
         const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
-        console.log("Logowanie zakończone powodzeniem");
         this.$router.replace(redirectUrl);
       } catch (err) {
         this.error = err.message;
       }
     },
+    handleError(){
+    this.$store.commit('clearErrors');
+  }
   },
+  
 };
 </script>
 
