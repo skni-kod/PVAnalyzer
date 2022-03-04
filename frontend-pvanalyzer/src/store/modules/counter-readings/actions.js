@@ -12,7 +12,6 @@ export default {
       reactive_energy_consumed: payload.reactive,
     };
 
-    console.log("dane wysłane: ", data);
     const url = `http://127.0.0.1:8000/api/pv-installations/${id}/counter-readings`;
 
     const response = await axios
@@ -43,15 +42,16 @@ export default {
             errors: error.response.data.errors,
             statusText: error.response.statusText,
           };
-          console.log(error.response);
           return errors;
         }
-        console.log(error.response);
       });
 
     return response;
   },
   async loadCounterReadings(context) {
+    if (!context.getters.shouldUpdate){
+      return;
+    }
     const id = 9;
     const token = localStorage.getItem("token");
 
@@ -82,7 +82,7 @@ export default {
         }
 
         context.commit("setReadings", counterReadings);
-        console.log("pobrano Odczyty");
+        context.commit('setFetchTimestamp');
       })
       .catch((error) => {
         console.error(error);

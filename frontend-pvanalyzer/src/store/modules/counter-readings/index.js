@@ -7,6 +7,7 @@ export default {
     state(){
         return {
             counterReadings:[],
+            lastFetch: null,
             labels: [],
             active: [],
             reactive: [],
