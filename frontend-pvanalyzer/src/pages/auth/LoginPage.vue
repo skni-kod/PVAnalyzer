@@ -1,58 +1,83 @@
 <template>
-  <!-- <div> -->
-    <base-dialog :show="isError" @close="handleError" title="Error">
-      {{ errorMessage }}
-    </base-dialog>
-    <base-login-register>
-      <div class="box">
-        <div class="content">
-          <form @submit.prevent="siema">
-            <div class="form-control">
-              <label class="label-form" for="username">Nazwa użytkownika</label>
-              <input
-                class="input-form"
-                type="text"
-                id="username"
-                placeholder="Email"
-                v-model.trim="email"
-                required
-              />
+  <base-dialog :show="isError" @close="handleError" title="Error">
+    {{ errorMessage }}
+  </base-dialog>
+  <base-login-register>
+    <div class="box">
+      <div class="content">
+        <form @submit.prevent="submitForm">
+          <div class="form-control">
+            <label class="label-form" for="username">Nazwa użytkownika</label>
+            <input
+              class="input-form"
+              type="text"
+              id="username"
+              placeholder="Email"
+              v-model.trim="email"
+              @blur="v$.email.$touch"
+            /> 
+            <div class="error-message" v-if="v$.email.$error">
+              <span v-for="error in v$.email.$errors" :key="error.$uid">{{
+                error.$message
+              }}</span>
             </div>
-            <div class="form-control">
-              <label class="label-form" for="password">Hasło </label>
-              <input
-                class="input-form"
-                type="password"
-                id="password"
-                placeholder="Hasło"
-                v-model.trim="password"
-                required
-              />
+          </div>
+          <div class="form-control">
+            <label class="label-form" for="password">Hasło </label>
+            <input
+              class="input-form"
+              type="password"
+              id="password"
+              placeholder="Hasło"
+              v-model.trim="password"
+              @blur="v$.password.$touch"
+            />
+            <div class="error-message" v-if="v$.password.$error">
+              <span v-for="error in v$.password.$errors" :key="error.$uid">{{
+                error.$message
+              }}</span>
             </div>
-          </form>
-        </div>
-        <div class="submit-button">
-          <button type="submit" @click="submitForm">Zaloguj się</button>
-        </div>
+          </div>
+          <div class="submit-button">
+            <button>Zaloguj się</button>
+          </div>
+        </form>
       </div>
+    </div>
 
-      <div class="bottom-text">
-        <span
-          >Nie masz konta?
-          <router-link to="/register">Załóż konto</router-link></span
-        >
-      </div>
-    </base-login-register>
-  <!-- </div> -->
+    <div class="bottom-text">
+      <span>Nie masz konta?
+        <router-link to="/register">Załóż konto</router-link>
+        </span>
+    </div>
+  </base-login-register>
 </template>
 
 <script>
+import useVuelidate from "@vuelidate/core";
+import { required, helpers } from "@vuelidate/validators";
+
 export default {
   data() {
     return {
+      v$: useVuelidate(),
       email: "",
       password: "",
       error: null,
+      vuelidateExternalResults: {
+        email: null,
+        password: null,
+      },
+    };
+  },
+  validations() {
+    return {
+      email: {
+        required: helpers.withMessage("Email musi być wypełniony.", required),
+      },
+      password: {
+        required: helpers.withMessage("Hasło musi być wypełniony.", required),
+      },
     };
   },
   computed: {
@@ -65,26 +90,37 @@ export default {
   },
 
   methods: {
-    async submitForm() {
-      const actionPayload = {
-        email: this.email,
-        password: this.password,
-      };
-
-      try {
-        await this.$store.dispatch("login", actionPayload);
-        await this.$store.dispatch("pVInstallation/loadInstallation");
-        const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
-        this.$router.replace(redirectUrl);
-      } catch (err) {
-        this.error = err.message;
+    async validate() {
+      this.v$.$clearExternalResults();
+      if (!(await this.v$.$validate())) {
+        return true;
       }
     },
-    handleError(){
-    this.$store.commit('clearErrors');
-  }
+    async submitForm() {
+      this.v$.$clearExternalResults();
+      await this.v$.$validate();
+      if (!this.v$.$invalid) {
+        const actionPayload = {
+          email: this.email,
+          password: this.password,
+        };
+        const response = await this.$store.dispatch("login", actionPayload);
+        console.log('response status', response);
+        if (response.status == "201") {
+          await this.$store.dispatch("pVInstallation/loadInstallation");
+          const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
+          this.$router.replace(redirectUrl);
+        }
+        if (response.status == "401") {          
+                const rules = response.errors;
+                this.vuelidateExternalResults.password = rules;
+        }
+      }
+    },
+    handleError() {
+      this.$store.commit("clearErrors");
+    },
   },
-  
 };
 </script>
 
@@ -94,11 +130,12 @@ export default {
   margin: 5% 15% 0 15%;
 }
 .content {
-  padding: 10px 40px 10px 40px;
+  padding-top: 5px;
   background-color: #ffffff;
 }
 .form-control {
   margin: 15px 0 15px 0;
+  padding: 0 40px 0 40px;
 }
 .label-form {
   display: block;
@@ -153,5 +190,14 @@ button:active {
   .bottom-text {
     margin-bottom: 20px;
   }
+}
+.error-message {
+  display: flex;
+  flex-direction: column;
+  color: red;
+  font-size: 12px;
+}
+.error-message span {
+  display: block;
 }
 </style>

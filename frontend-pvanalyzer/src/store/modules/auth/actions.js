@@ -49,7 +49,7 @@ export default {
         },
       })
       .then((res) => {
-        //zmiana w vuex
+        //komunikat o poprawności wykonania
         console.log(res);
       })
       .catch((error) => {
@@ -98,17 +98,11 @@ export default {
       password: payload.password,
     };
 
-    await axios
+    const response = await axios
       .post(url, data, {
         headers: {
           "content-type": "application/json",
         },
-      })
-      .catch((error) => {
-        const responseError = error.response;
-        context.commit("setErrors", {
-          errors: responseError.statusText,
-        });
       })
       .then((res) => {
         const responseData = res.data;
@@ -121,7 +115,24 @@ export default {
           userName: responseData.user.name,
           userEmail: responseData.user.email,
         });
+        return res;
+      })
+      .catch((error) => {
+        const responseError = error.response;
+        if (responseError.status == 401) {
+          const errors = {
+            status: responseError.status,
+            errors:  responseError.data.message,
+            statusText: responseError.statusText,
+          };
+          return errors;
+        } else {
+          context.commit("setErrors", {
+            errors: responseError.statusText,
+          });
+        }
       });
+    return response;
   },
   logout(context) {
     localStorage.removeItem("token");
