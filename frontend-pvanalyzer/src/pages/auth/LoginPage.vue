@@ -1,8 +1,11 @@
 <template>
-  <base-dialog :show="isError" @close="handleError" title="Error">
+<base-dialog :show="isError" @close="handleError" title="Error">
     {{ errorMessage }}
   </base-dialog>
-  <base-login-register>
+<div v-if="isLoading">
+  <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
+</div>
+<base-login-register v-else>
     <div class="box">
       <div class="content">
         <form @submit.prevent="submitForm">
@@ -51,16 +54,23 @@
         </span>
     </div>
   </base-login-register>
+  
 </template>
 
 <script>
 import useVuelidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 
 export default {
+  components: {
+    Loading
+  },
   data() {
     return {
       v$: useVuelidate(),
+      isLoading:false,
       email: "",
       password: "",
       error: null,
@@ -104,9 +114,11 @@ export default {
           email: this.email,
           password: this.password,
         };
+        this.isLoading = true;
         const response = await this.$store.dispatch("login", actionPayload);
-        console.log('response status', response);
-        if (response.status == "201") {
+        this.isLoading = false;
+        if(!this.isError){
+          if (response.status == "201") {
           await this.$store.dispatch("pVInstallation/loadInstallation");
           const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
           this.$router.replace(redirectUrl);
@@ -115,6 +127,8 @@ export default {
                 const rules = response.errors;
                 this.vuelidateExternalResults.password = rules;
         }
+        }
+        
       }
     },
     handleError() {
