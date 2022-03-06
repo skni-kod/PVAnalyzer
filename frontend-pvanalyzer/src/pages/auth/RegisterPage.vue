@@ -1,5 +1,11 @@
 <template>
-  <base-login-register>
+  <base-dialog :show="isError" @close="handleError" title="Error">
+    {{ errorMessage }}
+  </base-dialog>
+  <div v-if="isLoading">
+    <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
+  </div>
+  <base-login-register v-else>
     <div class="box">
       <form @submit.prevent="submitForm">
         <div class="content">
@@ -11,10 +17,9 @@
               id="email"
               placeholder="Email"
               v-model.trim="email"
+              @blur="v$.email.$touch"
             />
-            <p class="error-message" v-if="errors['emailE']">
-              Login jest wymagany
-            </p>
+            <validate-message :value="v$.email"></validate-message>
           </div>
           <div class="form-control">
             <label class="label-form" for="username">Nazwa użytkownika</label>
@@ -24,10 +29,9 @@
               id="username"
               placeholder="Nazwa użytkownika"
               v-model.trim="userName"
+              @blur="v$.userName.$touch"
             />
-            <p class="error-message" v-if="errors['userNameE']">
-              Nazwa użytkownika jest wymagana
-            </p>
+            <validate-message :value="v$.userName"></validate-message>
           </div>
           <div class="form-control">
             <label class="label-form" for="password">Hasło </label>
@@ -37,10 +41,9 @@
               id="password"
               placeholder="Hasło"
               v-model.trim="password"
+              @blur="v$.password.$touch"
             />
-            <p class="error-message" v-if="errors['passwordE']">
-              Hasło jest wymagane
-            </p>
+            <validate-message :value="v$.password"></validate-message>
           </div>
           <div class="form-control">
             <label class="label-form" for="repeat-password"
@@ -52,47 +55,60 @@
               id="repeat-password"
               placeholder="Powtórz hasło"
               v-model.trim="repeatPassword"
+              @blur="v$.repeatPassword.$touch"
             />
-            <p class="error-message" v-if="errors['repeatPasswordE']">
-              Hasło jest wymagane
-            </p>
+            <validate-message :value="v$.repeatPassword"></validate-message>
           </div>
           <div class="form-control-checkbox">
             <input type="checkbox" id="statute" v-model="statute" />
             <label for="statute">Akceptuję <a href="">regulamin</a> </label>
-            <p class="error-message" v-if="errors['statuteE']">
-              Musisz zaakceptować regulamin
-            </p>
           </div>
+          <validate-message :value="v$.statute"></validate-message>
         </div>
         <div class="submit-button">
           <button>Utwórz konto</button>
         </div>
       </form>
     </div>
-
     <div class="bottom-text">
       <span
         >Masz już konto?
-        <router-link to="/login">Zaloguj się</router-link></span
-      >
+        <router-link to="/login">Zaloguj się</router-link>
+      </span>
     </div>
   </base-login-register>
 </template>
 
 <script>
+import ValidateMessage from "../../components/validation/ErrorMessage.vue";
+import useVuelidate from "@vuelidate/core";
+import {
+  email,
+  minLength,
+  required,
+  helpers,
+  sameAs,
+} from "@vuelidate/validators";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
+
 export default {
+  components: {
+    ValidateMessage,
+    Loading,
+  },
   setup() {},
   data() {
     return {
-      errors: {
-        emailE: "",
-        userNameE: "",
-        passwordE: "",
-        repeatPasswordE: "",
-        statuteE: "",
+      v$: useVuelidate(),
+      vuelidateExternalResults: {
+        email: "",
+        userName: "",
+        password: "",
+        repeatPassword: "",
+        statute: null,
       },
-      formIsOk: true,
+      isLoading: false,
       email: "",
       userName: "",
       password: "",
@@ -100,60 +116,118 @@ export default {
       statute: null,
     };
   },
-  computed: {},
+  validations() {
+    return {
+      email: {
+        email: helpers.withMessage("Email jest niepoprawny", email),
+        required: helpers.withMessage("Email musi być podany.", required),
+      },
+      userName: {
+        minLength: helpers.withMessage(
+          "Nazwa użytkownia musi mieć min 4 znaki.",
+          minLength(4)
+        ),
+        required: helpers.withMessage(
+          "Nazwa użytkownika musi być podana.",
+          required
+        ),
+      },
+      password: {
+        minLength: helpers.withMessage(
+          "Hasło musi mieć min 8 znaków.",
+          minLength(8)
+        ),
+        required: helpers.withMessage("Hasło musi być podane.", required),
+      },
+      repeatPassword: {
+        sameAs: helpers.withMessage(
+          "Hasła muszą być identyczne",
+          sameAs(this.password)
+        ),
+        minLength: helpers.withMessage(
+          "Hasło musi mieć min 8 znaków.",
+          minLength(8)
+        ),
+        required: helpers.withMessage("Hasło musi być podane.", required),
+      },
+      statute: {
+        required: helpers.withMessage(
+          "Musisz zaakceptować regulamin.",
+          required
+        ),
+      },
+    };
+  },
+  computed: {
+    isError() {
+      return this.$store.getters.errors == "" ? false : true;
+    },
+    errorMessage() {
+      return this.$store.getters.errors;
+    },
+  },
   methods: {
-    valitation() {
-      if (this.email == "") {
-        this.errors["emailE"] = "Email jest wymagany.";
-        this.formIsOk = false;
-      }
-      if (this.userName == "") {
-        this.errors["userNameE"] = "Nazwa użytkownika jest wymagana.";
-        this.formIsOk = false;
-      }
-      if (this.password == "") {
-        this.errors["passwordE"] = "Hasło jest wymagane.";
-        this.formIsOk = false;
-      }
-      if (this.repeatPassword == "") {
-        this.errors["repeatPasswordE"] = "Hasło jest wymagane.";
-        this.formIsOk = false;
-      }
-      if (this.statute === null) {
-        this.errors["statuteE"] = "Musisz akceptować regulamin";
-        this.formIsOk = false;
+    async validate() {
+      this.v$.$clearExternalResults();
+      if (!(await this.v$.$validate())) {
+        return true;
       }
     },
     async submitForm() {
-      this.initErrors();
-      this.valitation();
-
-      if (this.formIsOk) {
+      this.v$.$clearExternalResults();
+      await this.v$.$validate();
+      if (!this.v$.$invalid) {
         const actionPayload = {
           email: this.email,
           name: this.userName,
           password: this.password,
           password_confirmation: this.repeatPassword,
         };
-
-        try {
-         await this.$store.dispatch("register", actionPayload);
-         const redirectUrl = "/login";
-         this.$router.replace(redirectUrl); 
-        }catch (err){
-          this.errors = err.message;
+        this.isLoading = true;
+        const response = await this.$store.dispatch("register", actionPayload);
+        this.isLoading = false;
+        if (!this.isError) {
+          if (response.status == "201") {
+            this.$router.replace("/login");
+          }
+          if (response.status == "422") {
+            for (let e in response.errors) {
+              switch (e) {
+                case "name": {
+                  const rules = response.errors[e];
+                  let errors = [];
+                  for (let rule in rules) {
+                    errors.push(response.errors[e][rule]);
+                  }
+                  this.vuelidateExternalResults.userName = errors;
+                  break;
+                }
+                case "email": {
+                  const rules = response.errors[e];
+                  let errors = [];
+                  for (let rule in rules) {
+                    errors.push(response.errors[e][rule]);
+                  }
+                  this.vuelidateExternalResults.email = errors;
+                  break;
+                }
+                case "password": {
+                  const rules = response.errors[e];
+                  let errors = [];
+                  for (let rule in rules) {
+                    errors.push(response.errors[e][rule]);
+                  }
+                  this.vuelidateExternalResults.password = errors;
+                  break;
+                }
+              }
+            }
+          }
         }
       }
     },
-    initErrors() {
-      this.errors = {
-        emailE: "",
-        userNameE: "",
-        passwordE: "",
-        repeatPasswordE: "",
-        statuteE: "",
-      };
-      this.formIsOk = true;
+    handleError() {
+      this.$store.commit("clearErrors");
     },
   },
 };
@@ -198,10 +272,12 @@ export default {
 }
 a:hover,
 a:active {
+  cursor: pointer;
   color: #0044e2;
 }
 button:hover,
 button:active {
+  cursor: pointer;
   background-color: #0044e2;
   border-color: #0044e2;
 }
