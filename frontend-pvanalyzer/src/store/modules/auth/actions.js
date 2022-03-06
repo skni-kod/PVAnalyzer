@@ -60,35 +60,45 @@ export default {
   async register(context, payload) {
     const url = "http://127.0.0.1:8000/api/register";
 
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        name: payload.name,
-        email: payload.email,
-        password: payload.password,
-        password_confirmation: payload.password_confirmation,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const data = {
+      name: payload.name,
+      email: payload.email,
+      password: payload.password,
+      password_confirmation: payload.password_confirmation,
+    };
 
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      const error = new Error(
-        responseData.message || "Failed to authenticate. Check your login data."
-      );
-      throw error;
-    }
-
-    localStorage.setItem("token", responseData.token);
-    localStorage.setItem("userId", responseData.user.id);
-
-    context.commit("setUser", {
-      userId: responseData.user.id,
-      userName: responseData.user.name,
-    });
+    const response = await axios
+      .post(url, data, {
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+      .then((response) => {
+        const data = response.data;
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.user.id);
+        context.commit("setUser", {
+          userId: data.user.id,
+          userName: data.user.name,
+        });
+        return response;
+      })
+      .catch((error) => {
+        const responseError = error.response;
+        if (responseError.status == "422") {
+          const errors = {
+            status: error.response.status,
+            errors: error.response.data.errors,
+            statusText: error.response.statusText,
+          };
+          return errors;
+        } else {
+          context.commit("setErrors", {
+            errors: responseError.statusText,
+          });
+        }
+      });
+    return response;
   },
   async login(context, payload) {
     const url = "http://127.0.0.1:8000/api/login";
@@ -122,7 +132,7 @@ export default {
         if (responseError.status == 401) {
           const errors = {
             status: responseError.status,
-            errors:  responseError.data.message,
+            errors: responseError.data.message,
             statusText: responseError.statusText,
           };
           return errors;
