@@ -38,7 +38,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $fields = $request->validate([
-            'email' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string'
         ]);
         
@@ -48,7 +48,7 @@ class AuthController extends Controller
         if(!$user || !Hash::check($fields['password'], $user->password)) 
         {
             return response(
-                ['message'=> 'Bad creds'], 401);
+                ['message'=> 'Login lub hasło są niepoprawne'], 401);
         }
 
         $token = $user->createToken('myapptoken')->plainTextToken;

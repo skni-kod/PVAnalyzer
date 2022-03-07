@@ -95,7 +95,6 @@ export default {
       this.isChange = !this.isChange;
     },
     async saveData(data) {
-      console.log("data", data);
       try {
         await this.$store.dispatch("editProfile", data);
       } catch (err) {
@@ -113,7 +112,6 @@ export default {
       }
     },
     async changePassword(data) {
-      console.log("Data w rodzicu: ", data);
       try {
         await this.$store.dispatch("changePassword", data);
       } catch (err) {

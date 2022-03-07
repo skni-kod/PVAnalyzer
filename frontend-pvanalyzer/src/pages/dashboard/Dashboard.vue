@@ -1,38 +1,47 @@
 <template>
-  <div class="container" v-if="!isLoading">
-    <line-chart-card></line-chart-card>
+  <div
+    class="container"
+    v-if="!isLoading"
+    :style="{ marginLeft: marginLeftComputed }"
+  >
+    <line-chart-card :actualBalance="actualBalance"></line-chart-card>
     <bar-chart-card :balance="balance"></bar-chart-card>
-    <last-readings-table :tableData="tableData" ></last-readings-table>
-    
+    <last-readings-table :tableData="tableData"></last-readings-table>
   </div>
   <div v-else>
-    <loading v-model:active="isLoading"
-                 :can-cancel="true"
-                 :opacity=1 />
+    <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
   </div>
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
-    import 'vue-loading-overlay/dist/vue-loading.css';
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 
-
-import LastReadingsTable from '../../components/counter-readings/ReadingsListContainer.vue';
-import LineChartCard from '../../components/counter-readings/charts/LineChartCard.vue'
-import BarChartCard from '../../components/counter-readings/charts/BarChardCard.vue'
+import LastReadingsTable from "../../components/counter-readings/ReadingsListContainer.vue";
+import LineChartCard from "../../components/counter-readings/charts/LineChartCard.vue";
+import BarChartCard from "../../components/counter-readings/charts/BarChardCard.vue";
+import { sidebarWidth } from "../../components/sidebar/state.js";
 export default {
-  components: { LineChartCard, BarChartCard, LastReadingsTable, Loading},
+  components: { LineChartCard, BarChartCard, LastReadingsTable, Loading },
   data() {
     return {
       allLabels: [], //wszystkie daty z bazy
       allActive: [], //wszystkie odczyty pobrane z sieci
       allReactive: [], //wszystkie odczyty oddane do sieci
+      allRecover: [],
       calculatedMonthlyReadings: [],
       monthlyLabels: [],
       isLoading: true,
     };
   },
   computed: {
+    marginLeftComputed() {
+      if (sidebarWidth.value === "180px") {
+        return `200px`;
+      } else {
+        return `110px`;
+      }
+    },
     allReadings() {
       return this.$store.getters["readings/counterReadings"];
     },
@@ -42,14 +51,18 @@ export default {
     monthlyData() {
       return this.getLastReadingsInMounths();
     },
-    balance(){
+    balance() {
       return this.monthlyData[this.monthlyData.length - 1].balance;
     },
-    tableData(){
+    actualBalance() {
+      return this.allReadings[this.allReadings.length - 1].balance;
+    },
+    tableData() {
       return this.allReadings.slice(-5);
-    }
+    },
   },
   created() {
+    console.log('create hook Dashboard');
     this.loadCounterReadings();
   },
   provide() {
@@ -57,6 +70,7 @@ export default {
       allLabels: this.allLabels,
       allActive: this.allActive,
       allReactive: this.allReactive,
+      allRecover: this.allRecover,
       getCalculatedData: () => this.calculatedMonthlyReadings,
       calculatedMonthlyActive: this.calculatedMonthlyActive,
     };
@@ -71,7 +85,7 @@ export default {
           this.allActive,
           this.allReactive,
           "date",
-          null
+          this.allRecover
         );
         this.calculatedMonthlyReadings = this.calculateEveryMounth();
         this.splitIntoParts(
@@ -159,7 +173,6 @@ export default {
           newResult[latestMonthlyMeasurementIndex] = measurement;
           return newResult;
         }
-        console.log("koniec get last");
         /* Otherwise don't change the result */
         return result;
       }, []);
@@ -224,9 +237,12 @@ export default {
 </script>
 
 <style scoped>
-.container{
+.container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 30px;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26); */
+  padding: 1rem 18px;
 }
 </style>

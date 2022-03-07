@@ -24,5 +24,8 @@ export default{
     },
     setRecover(state, payload){
         state.recover = payload;
+    },
+    setFetchTimestamp(state){
+        state.lastFetch = new Date().getTime();
     }
 }

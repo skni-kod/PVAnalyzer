@@ -38,6 +38,7 @@ export default {
     font-weight: 900;
 }
 .left {
+  position: relative;
   width: 50%;
   background: #0934a5;
 }
@@ -79,7 +80,7 @@ span{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* height: 100%; */
+  height: 100%;
   /* padding-bottom: 37px; */
 }
 .logo h1 {
@@ -87,6 +88,7 @@ span{
   font-size: 48px;
 }
 .left-top {
+  position: absolute;
   display: flex;
   align-items: center;
   padding: 15px 0 0 15px;

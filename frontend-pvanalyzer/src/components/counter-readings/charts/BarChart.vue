@@ -1,6 +1,6 @@
 <template>
-  <div >
-    <canvas id="bar-chart" v-show="!loading" style="text-allign: center"></canvas>
+  <div class="container" style="text-align: center" >
+    <canvas id="bar-chart" v-show="!loading" ></canvas>
   </div>
 </template>
 
@@ -153,6 +153,9 @@ export default {
 </script>
 
 <style scoped>
+.container{
+  text-align: center;
+}
 p {
   background-color: #292828;
   /* color: rgb(33, 183, 132)); */

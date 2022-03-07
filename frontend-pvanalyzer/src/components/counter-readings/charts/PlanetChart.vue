@@ -1,5 +1,5 @@
 <template>
-  <div style="text-allign: center">
+  <div style="text-align: center">
     <canvas id="planet-chart" v-show="!loading"></canvas>
   </div>
 </template>
@@ -9,12 +9,12 @@ import Chart from "chart.js";
 
 export default {
   name: "PlanetChart",
-  inject: ['allLabels','allActive','allReactive'],
+  inject: ['allLabels','allActive','allReactive', 'allRecover'],
   data() {
     return {
       loading: true,
       labels: this.allLabels,
-      recover: [],
+      recover: this.allRecover,
       active: this.allActive,
       reactive: this.allReactive,
       lineChart: {
@@ -104,10 +104,11 @@ export default {
       // this.recover = this.allRecover.slice(length - 5);
       // this.active = this.allActive.slice(length - 5);
       // this.reactive = this.allReactive.slice(length - 5);
-      this.lineChart.data.labels = this.labels;
-      this.lineChart.data.datasets[0].data = this.recover;
-      this.lineChart.data.datasets[1].data = this.active;
-      this.lineChart.data.datasets[2].data = this.reactive;
+      const length = this.recover.length;
+      this.lineChart.data.labels = this.labels.slice(length - 10);
+      this.lineChart.data.datasets[0].data = this.recover.slice(length - 10);
+      this.lineChart.data.datasets[1].data = this.active.slice(length - 10);
+      this.lineChart.data.datasets[2].data = this.reactive.slice(length - 10);
       this.loading = false;
     },
   },

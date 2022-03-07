@@ -24,13 +24,14 @@ export default {
     isLoggedIn() {
       return this.$store.getters.isAuthenticated;
     },
+    
   },
-
   methods: {},
 };
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
 body {
   /* min-height: 100vh */
   height: 100vh;

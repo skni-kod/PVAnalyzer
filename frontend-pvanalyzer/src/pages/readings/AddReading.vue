@@ -67,7 +67,7 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, helpers  } from "@vuelidate/validators";
 
 export default {
   data() {
@@ -85,9 +85,9 @@ export default {
   },
   validations() {
     return {
-      date: { required },
-      activeEnergyConsumed: { required },
-      reactiveEnergyConsumed: { required },
+      date: { required: helpers.withMessage('Data musi być wypełniona.', required) },
+      activeEnergyConsumed: { required: helpers.withMessage('Energia pobrana musi być wypełniona.', required) },
+      reactiveEnergyConsumed: { required: helpers.withMessage('Energia oddana musi być wypełniona.', required) },
     };
   },
   methods: {
@@ -110,14 +110,11 @@ export default {
           "readings/addNewReading",
           formData
         );
-        console.log(response);
         if (response.status == "201") {
-          console.log('Dodano nowy odczyt');
           this.$router.replace("/dashboard");
         }
         if (response.status == "422") {
           for (let e in response.errors) {
-            console.log("e wynosi:", e);
             switch (e) {
               case "active_energy_consumed": {
                 const rules = response.errors[e];

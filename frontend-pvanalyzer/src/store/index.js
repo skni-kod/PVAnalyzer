@@ -1,15 +1,33 @@
-import { createStore } from 'vuex';
+import { createStore } from "vuex";
 
-import authModule from './modules/auth/index.js';
-import pvInstallationModule from './modules/pv-installations/index.js';
-import counterReadingsModule from './modules/counter-readings/index.js'
+import authModule from "./modules/auth/index.js";
+import pvInstallationModule from "./modules/pv-installations/index.js";
+import counterReadingsModule from "./modules/counter-readings/index.js";
 
 const store = createStore({
-    modules: {
-      auth: authModule,
-      pVInstallation: pvInstallationModule,
-      readings: counterReadingsModule
+  state() {
+    return {
+      errors: '',
+    };
+  },
+  mutations: {
+    setErrors(state, payload) {
+      state.errors = payload.errors;
     },
-  });
-  
-  export default store;
+    clearErrors(state){
+      state.errors = '';
+    }
+  },
+  getters: {
+    errors(state){
+      return state.errors;
+    }
+  },
+  modules: {
+    auth: authModule,
+    pVInstallation: pvInstallationModule,
+    readings: counterReadingsModule,
+  },
+});
+
+export default store;
