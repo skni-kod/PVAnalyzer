@@ -120,6 +120,7 @@ export default {
         if(!this.isError){
           if (response.status == "201") {
           await this.$store.dispatch("pVInstallation/loadInstallation");
+          console.log('dokonało się');
           const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
           this.$router.replace(redirectUrl);
         }

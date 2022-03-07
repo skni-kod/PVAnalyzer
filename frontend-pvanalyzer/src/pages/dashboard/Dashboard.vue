@@ -4,11 +4,9 @@
     v-if="!isLoading"
     :style="{ marginLeft: marginLeftComputed }"
   >
-    <!-- <base-card> -->
     <line-chart-card :actualBalance="actualBalance"></line-chart-card>
     <bar-chart-card :balance="balance"></bar-chart-card>
     <last-readings-table :tableData="tableData"></last-readings-table>
-    <!-- </base-card> -->
   </div>
   <div v-else>
     <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
@@ -40,7 +38,6 @@ export default {
     marginLeftComputed() {
       if (sidebarWidth.value === "180px") {
         return `200px`;
-        // return `15%`;
       } else {
         return `110px`;
       }
@@ -65,6 +62,7 @@ export default {
     },
   },
   created() {
+    console.log('create hook Dashboard');
     this.loadCounterReadings();
   },
   provide() {

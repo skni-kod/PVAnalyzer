@@ -11,7 +11,7 @@ export default {
       name: payload.name,
       email: payload.email,
     };
-    axios
+    await axios
       .put(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ export default {
       password: payload.password,
       password_confirmation: payload.confirmation,
     };
-    axios
+    await axios
       .put(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,5 +1,4 @@
 <template>
-  <!-- <base-card> -->
   <div class="container">
     <div class="header">
       <h1>Bilans roczny</h1>
@@ -17,7 +16,6 @@
     </div>
     <bar-chart></bar-chart>
   </div>
-  <!-- </base-card> -->
 </template>
 
 <script>
@@ -39,8 +37,7 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 
 .header {

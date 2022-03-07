@@ -1,5 +1,4 @@
 <template>
-  <!-- <base-card> -->
     <div class="container">
       <div class="header">
         <h1>Ostatnie odczyty</h1>
@@ -13,17 +12,10 @@
           <i class="fa-solid fa-arrow-down" />
           <span class="value"> {{ actualBalance }} kWh</span>
         </span>
-<!-- 
-
-          <span
-            ><i class="fa-solid fa-arrow-up" />
-            <span class="value"> {{ actualBalance }} kWh</span></span
-          > -->
         </div>
       </div>
       <LineChart />
     </div>
-  <!-- </base-card> -->
 </template>
 
 <script>
@@ -45,7 +37,7 @@ export default {
 .container{
   display: flex;
   flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 
 }
 .header {
