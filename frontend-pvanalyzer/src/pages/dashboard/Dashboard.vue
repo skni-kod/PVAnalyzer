@@ -94,13 +94,17 @@ export default {
   methods: {
     addNewReading() {
       this.message = this.$store.getters.successMessage;
+      if(this.message.desc === 'Dodano nowy odczyt'){
+        this.$store.commit('readings/clearLastFetch');
+      }
       if(this.message){
+        
         setTimeout(() => {
         this.$store.commit('clearSuccessMessage');
         this.message = this.$store.getters.successMessage;
       }, 3000);
       }
-      this.$store.commit('readings/clearLastFetch');
+      
     },
     async loadCounterReadings() {
       try {
