@@ -22,7 +22,7 @@
     </div>
     <div class="buttons-group">
       <base-blue-button type="button" @click="cancelClicked">Cancel</base-blue-button>
-      <base-blue-button color="green">Save</base-blue-button>
+      <base-blue-button colorButton="button-green">Save</base-blue-button>
     </div>
   </form>
 </template>
@@ -50,8 +50,6 @@ export default {
   created() {
     this.name.val = this.userName;
     this.email.val = this.userEmail;
-    // this.enteredName = this.userName;
-    // this.enteredEmail = this.userEmail;
   },
   methods: {
     cancelClicked() {

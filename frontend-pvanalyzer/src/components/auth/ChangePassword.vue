@@ -27,7 +27,7 @@
       <base-blue-button type="button" @click="cancelClicked"
         >Cancel</base-blue-button
       >
-      <base-blue-button color="green">Save</base-blue-button>
+      <base-blue-button colorButton='button-green'>Save</base-blue-button>
     </div>
   </Form>
 </template>
