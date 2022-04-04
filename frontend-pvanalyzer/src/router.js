@@ -6,6 +6,7 @@ import Dashboard from './pages/dashboard/Dashboard.vue';
 import PVInstallation from './pages/pv-installation/PVInstallation.vue'
 import ProfilePage from './pages/auth/ProfilePage.vue';
 import AddReading from './pages/readings/AddReading.vue';
+import NotFound from './pages/NotFound.vue'
 
 import store from './store/index.js';
 
@@ -20,6 +21,7 @@ const router = createRouter({
         { path: '/pv-installation', component: PVInstallation, meta: { requiresAuth: true }},     //info o instalacji
         { path: '/readings', component: null,  meta: { requiresAuth: true }},                      //odczyty
         { path: '/profile', component: ProfilePage, meta: { requiresAuth: true }},
+        { path: '/notFound', component: NotFound }
     ]
 });
 

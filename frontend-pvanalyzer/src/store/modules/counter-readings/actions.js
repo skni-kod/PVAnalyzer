@@ -8,7 +8,6 @@ export default {
     const data = {
       date: payload.date,
       active_energy_consumed: payload.active,
-      // active_energy_consumed: "siema",
       reactive_energy_consumed: payload.reactive,
     };
 
@@ -30,7 +29,7 @@ export default {
           reactiveEnergyConsumed: data.reactive_energy_consumed,
           energyToRecover: data.energy_to_recover,
           balance: data.balance,
-          mounth: data.mounth,
+          month: data.month,
         };
         context.commit("addReading", counterReading);
         return response;
@@ -49,14 +48,10 @@ export default {
     return response;
   },
   async loadCounterReadings({ commit, getters,  rootGetters }) {
-    
-    // if (!context.getters.shouldUpdate){
     if (!getters.shouldUpdate){
       return;
     }
     const id = rootGetters['pVInstallation/installationId'];
-    // console.log(context.rootGetters['pVInstallation/installationId']);
-    // console.log('root getters:', rootGetters['pVInstallation/installationId']);
     const token = localStorage.getItem("token");
 
     const url = `http://127.0.0.1:8000/api/pv-installations/${id}/counter-readings`;
@@ -80,14 +75,12 @@ export default {
             reactiveEnergyConsumed: data[i].reactive_energy_consumed,
             energyToRecover: data[i].energy_to_recover,
             balance: data[i].balance,
-            mounth: data[i].mounth,
+            month: data[i].month,
           };
           counterReadings.push(counterReading);
         }
 
         commit("setReadings", counterReadings);
-        // context.commit("setReadings", counterReadings);
-        // context.commit('setFetchTimestamp');
         commit('setFetchTimestamp');
       })
       .catch((error) => {

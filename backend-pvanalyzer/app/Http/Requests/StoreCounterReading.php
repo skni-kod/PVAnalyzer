@@ -25,8 +25,8 @@ class StoreCounterReading extends FormRequest
     {
         return [
             'date' => 'required|date',
-            'active_energy_consumed' => 'required|numeric',
-            'reactive_energy_consumed' => 'required|numeric',
+            'active_energy_consumed' => 'required|numeric|min:1',
+            'reactive_energy_consumed' => 'required|numeric|min:1',
         ];
     }
 
@@ -41,6 +41,8 @@ class StoreCounterReading extends FormRequest
             'date.date' => 'Data musi mieć odpowiedni format',
             'active_energy_consumed.numeric' => 'Energia pobrana musi być wartością liczbową',
             'reactive_energy_consumed.numeric' => 'Energia oddana musi być wartością liczbową',
+            'active_energy_consumed.min' => 'Wartość energii oddanej musi być większa od 1.',
+            'reactive_energy_consumed.min' => 'Wartość energii pobranej musi być większa od 1.'
         ];
     }
 }

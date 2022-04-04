@@ -8,6 +8,10 @@ const store = createStore({
   state() {
     return {
       errors: '',
+      successMessage: {
+        desc: '',
+        title: '',
+      },
     };
   },
   mutations: {
@@ -16,11 +20,21 @@ const store = createStore({
     },
     clearErrors(state){
       state.errors = '';
+    },
+    setMessage(state, payload){
+      state.successMessage.desc = payload.desc;
+      state.successMessage.title = payload.title;
+    },
+    clearSuccessMessage(state){
+      state.successMessage = [];
     }
   },
   getters: {
     errors(state){
       return state.errors;
+    },
+    successMessage(state){
+      return state.successMessage;
     }
   },
   modules: {

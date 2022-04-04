@@ -106,7 +106,7 @@ export default {
         return true;
       }
     },
-    async submitForm() {
+    async submitForm() {      
       this.v$.$clearExternalResults();
       await this.v$.$validate();
       if (!this.v$.$invalid) {
@@ -116,15 +116,15 @@ export default {
         };
         this.isLoading = true;
         const response = await this.$store.dispatch("login", actionPayload);
-        this.isLoading = false;
+        
         if(!this.isError){
           if (response.status == "201") {
           await this.$store.dispatch("pVInstallation/loadInstallation");
-          console.log('dokonało się');
           const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
           this.$router.replace(redirectUrl);
         }
-        if (response.status == "401") {          
+        if (response.status == "401") { 
+          this.isLoading = false;         
                 const rules = response.errors;
                 this.vuelidateExternalResults.password = rules;
         }
@@ -184,6 +184,7 @@ button:hover,
 button:active {
   background-color: #0044e2;
   border-color: #0044e2;
+  cursor: pointer;
 }
 
 .bottom-text {
