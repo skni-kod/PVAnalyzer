@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="text-align: center" >
+  <div class="chart-container" style="text-align: center" >
     <canvas id="bar-chart" v-show="!loading" ></canvas>
   </div>
 </template>
@@ -79,6 +79,7 @@ export default {
                 ticks: {
                   beginAtZero: true,
                   padding: 15,
+                  stepSize: 200,
                 },
               },
             ],
@@ -93,7 +94,7 @@ export default {
     }
   },
   created() {
-    this.splitIntoParts(this.calculatedData, this.labels, this.active, this.reactive, 'mounth', this.recover);
+    this.splitIntoParts(this.calculatedData, this.labels, this.active, this.reactive, 'month', this.recover);
   },
   beforeMount() {
     this.getDataToChart();
@@ -115,7 +116,7 @@ export default {
         }
         else{
           for (let reading in readings) {
-          labels.push(readings[reading].mounth);
+          labels.push(readings[reading].month);
           active.push(readings[reading].activeEnergyConsumed);
           reactive.push(readings[reading].reactiveEnergyConsumed);
            recover.push(readings[reading].energyToRecover);
@@ -133,7 +134,7 @@ export default {
         }
         else{
           for (let reading in readings) {
-          labels.push(readings[reading].mounth);
+          labels.push(readings[reading].month);
           active.push(readings[reading].activeEnergyConsumed);
           reactive.push(readings[reading].reactiveEnergyConsumed);
          
@@ -153,8 +154,10 @@ export default {
 </script>
 
 <style scoped>
-.container{
+.chart-container{
   text-align: center;
+  /* height: 500px; */
+  width: 500px;
 }
 p {
   background-color: #292828;

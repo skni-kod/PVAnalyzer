@@ -1,5 +1,4 @@
 <template>
-  <!-- <base-card> -->
   <div class="container">
     <div class="header">
       <h1>Lista odczytów</h1>
@@ -25,7 +24,6 @@
       >Dodaj nowy odczyt</base-blue-button
     >
   </div>
-  <!-- </base-card> -->
 </template>
 
 <script>

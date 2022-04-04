@@ -118,7 +118,6 @@ export default {
         const responseData = res.data;
         localStorage.setItem("token", responseData.token);
         localStorage.setItem("userId", responseData.user.id);
-
         context.commit("setUser", {
           token: responseData.token,
           userId: responseData.user.id,

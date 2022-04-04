@@ -80,9 +80,6 @@ export default {
       this.$emit("cancel-form");
     },
     submitForm(values) {
-      console.log('values to:', values);
-      console.log(JSON.stringify(values, null, 2));
-
       this.$emit('save-data', values);
     },
   },

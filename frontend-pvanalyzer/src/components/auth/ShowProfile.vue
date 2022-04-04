@@ -13,16 +13,6 @@
 
 <script>
 export default {
-//   props: {
-//     userEmail: {
-//       type: String,
-//       required: false,
-//     },
-//     userName: {
-//       type: String,
-//       required: false,
-//     },
-//   },
 props: {
     userName: String,
     userEmail: String

@@ -1,12 +1,13 @@
 <template>
-  <div class="sidebar" :style="{ width: sidebarWidth }">
+  <div class="sidebar" :style="{ maxWidth: sidebarWidth }">
     <router-link to="/dashboard">
       <h1>
         <i class="fa-solid fa-bolt" />
         <span v-if="collapsed"> </span>
         <span v-else style="margin-left: 10px">PVAnalyzer</span>
-      </h1></router-link>
-      
+      </h1></router-link
+    >
+
     <SidebarLink to="/dashboard" icon="fas fa-home-alt">Home</SidebarLink>
     <SidebarLink to="/pv-installation" icon="fa-solid fa-solar-panel"
       >Moja instalacja</SidebarLink
@@ -36,13 +37,12 @@ export default {
     return { collapsed, toggleSidebar, sidebarWidth, logo };
   },
   data() {
-    return {
-    };
+    return {};
   },
-  computed:{
-    userName(){
+  computed: {
+    userName() {
       return this.$store.getters.userName;
-    }
+    },
   },
   methods: {
     logout() {
@@ -66,9 +66,8 @@ h1 {
   font-size: 24px;
   color: white;
   padding: 0 0.4em 0 0.4em;
-
 }
-a{
+a {
   text-decoration: none;
 }
 
@@ -82,11 +81,13 @@ a{
   left: 0;
   bottom: 0;
   padding: 0.5em;
-
-  transition: 0.3s ease;
-
+  transition: max-width 0.3s ease;
   display: flex;
   flex-direction: column;
+  max-width: 180px;
+  width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .collapse-icon {
