@@ -27,5 +27,8 @@ export default{
     },
     setFetchTimestamp(state){
         state.lastFetch = new Date().getTime();
+    },
+    clearLastFetch(state){
+        state.lastFetch = null;
     }
 }

@@ -6,11 +6,21 @@
   >
     <line-chart-card :actualBalance="actualBalance"></line-chart-card>
     <bar-chart-card :balance="balance"></bar-chart-card>
-    <last-readings-table :tableData="tableData"></last-readings-table>
+    <last-readings-table
+      :tableData="tableData"
+    ></last-readings-table>
   </div>
   <div v-else>
     <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
   </div>
+  <Transition name="slide-fade">
+    <flash-message
+      v-if="message.desc"
+      type="success"
+      :title="message.title"
+      :desc="message.desc"
+    />
+  </Transition>
 </template>
 
 <script>
@@ -32,6 +42,12 @@ export default {
       calculatedMonthlyReadings: [],
       monthlyLabels: [],
       isLoading: true,
+      changesIsSuccess: false,
+      descMessage: null,
+      message: {
+        title: '',
+        desc: ''
+      }
     };
   },
   computed: {
@@ -49,7 +65,7 @@ export default {
       return this.$store.getters["pVInstallation/powerInstallation"];
     },
     monthlyData() {
-      return this.getLastReadingsInMounths();
+      return this.getLastReadingsInMonths();
     },
     balance() {
       return this.monthlyData[this.monthlyData.length - 1].balance;
@@ -59,11 +75,11 @@ export default {
     },
     tableData() {
       return this.allReadings.slice(-5);
-    },
+    }
   },
-  created() {
-    console.log('create hook Dashboard');
-    this.loadCounterReadings();
+  async created() {
+    await this.addNewReading();
+    await this.loadCounterReadings();
   },
   provide() {
     return {
@@ -76,6 +92,16 @@ export default {
     };
   },
   methods: {
+    addNewReading() {
+      this.message = this.$store.getters.successMessage;
+      if(this.message){
+        setTimeout(() => {
+        this.$store.commit('clearSuccessMessage');
+        this.message = this.$store.getters.successMessage;
+      }, 3000);
+      }
+      this.$store.commit('readings/clearLastFetch');
+    },
     async loadCounterReadings() {
       try {
         await this.$store.dispatch("readings/loadCounterReadings");
@@ -87,13 +113,13 @@ export default {
           "date",
           this.allRecover
         );
-        this.calculatedMonthlyReadings = this.calculateEveryMounth();
+        this.calculatedMonthlyReadings = this.calculateEverymonth();
         this.splitIntoParts(
           this.calculatedMonthlyReadings,
           this.calculatedMonthlyLabels,
           this.calculatedMonthlyActive,
           this.calculatedMonthlyReactive,
-          "mounth",
+          "month",
           this.calculatedMonthlyRecover
         );
       } catch (error) {
@@ -126,7 +152,7 @@ export default {
           }
         } else {
           for (let reading in readings) {
-            labels.push(readings[reading].mounth);
+            labels.push(readings[reading].month);
             active.push(readings[reading].activeEnergyConsumed);
             reactive.push(readings[reading].reactiveEnergyConsumed);
             recover.push(readings[reading].energyToRecover);
@@ -141,52 +167,44 @@ export default {
           }
         } else {
           for (let reading in readings) {
-            labels.push(readings[reading].mounth);
+            labels.push(readings[reading].month);
             active.push(readings[reading].activeEnergyConsumed);
             reactive.push(readings[reading].reactiveEnergyConsumed);
           }
         }
       }
     },
-    getLastReadingsInMounths() {
-      let mData = [];
-
-      mData = this.allReadings.reduce((result, measurement) => {
-        /* Convert measurement's date from ISO string to `Date` instance. */
-        const date = new Date(measurement.date);
-
-        /* Get index of the latest stored measurement of the given month. */
-        const latestMonthlyMeasurementIndex = result.findIndex(
-          (latestMeasurement) =>
-            date.getMonth() === new Date(latestMeasurement.date).getMonth()
-        );
-
-        /* If the are no measurements from a given month - add a current measurement to the result. */
-        if (latestMonthlyMeasurementIndex === -1) {
-          return [...result, measurement];
+    getLastReadingsInMonths() {
+      const allData = this.allReadings;
+      const length = allData.length;
+      let results = [];
+      for (let i = 1; i < length; i++) {
+        let previousData = new Date(allData[i - 1].date);
+        let nextData = new Date(allData[i].date);
+        let previousMonth = previousData.getMonth();
+        let nextMonth = nextData.getMonth();
+        if (nextMonth !== previousMonth) {
+          results.push(allData[i - 1]);
         }
-        if (
-          date.getTime() >
-          new Date(result[latestMonthlyMeasurementIndex].date).getTime()
-        ) {
-          const newResult = [...result];
-          newResult[latestMonthlyMeasurementIndex] = measurement;
-          return newResult;
-        }
-        /* Otherwise don't change the result */
-        return result;
-      }, []);
-      return mData;
+      }
+      const lastDay = new Date(allData[length - 1]);
+      const dayBeforeLast = new Date(allData[length - 2]);
+      const lastDayMonth = lastDay.getMonth();
+      const dayBeforeLastMonth = dayBeforeLast.getMonth();
+      if (lastDayMonth !== dayBeforeLastMonth) {
+        results.push(allData[allData.length - 1]);
+      }
+      return results;
     },
     //get data only from every month
     // w skrócie odejmujemy od wyniku danym miesiący wynik z poprzedniego miesiąca
-    calculateEveryMounth() {
+    calculateEverymonth() {
       let result = [];
 
       result.push({
         id: this.monthlyData[0].id,
         date: this.monthlyData[0].date,
-        mounth: this.monthlyData[0].mounth,
+        month: this.monthlyData[0].month,
         activeEnergyConsumed: this.monthlyData[0].activeEnergyConsumed,
         reactiveEnergyConsumed: this.monthlyData[0].reactiveEnergyConsumed,
         energyToRecover: this.monthlyData[0].energyToRecover,
@@ -223,7 +241,7 @@ export default {
         let temp = {
           id: this.monthlyData[i].id,
           date: this.monthlyData[i].date,
-          mounth: this.monthlyData[i].mounth,
+          month: this.monthlyData[i].month,
           activeEnergyConsumed: newActive,
           reactiveEnergyConsumed: newReactive,
           energyToRecover: newRecover,
@@ -237,6 +255,19 @@ export default {
 </script>
 
 <style scoped>
+.slide-fade-enter-active {
+  transition: all 0.7s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(90px);
+  opacity: 0;
+}
 .container {
   display: flex;
   flex-wrap: wrap;

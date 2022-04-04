@@ -119,6 +119,11 @@ export default {
           formData
         );
         if (response.status == "201") {
+          const successMessage = {
+            title: "Sukces!",
+            desc: "Dodano nowy odczyt" 
+          }
+          this.$store.commit('setMessage', successMessage);
           this.$router.replace("/dashboard");
         }
         if (response.status == "422") {
