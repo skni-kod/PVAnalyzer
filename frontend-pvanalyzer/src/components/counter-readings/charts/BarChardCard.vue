@@ -3,7 +3,7 @@
     <div class="header">
       <h1>Bilans roczny</h1>
       <div class="right-block">
-        <a href="">Zobacz raport</a>
+        <router-link to="/notFound">Zobacz raport</router-link>
         <span v-if="isSaved" style="color: green">
           <i class="fa-solid fa-arrow-up" />
           <span class="value"> {{ balance }} kWh</span>
