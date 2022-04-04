@@ -23,6 +23,7 @@
           <input
             class="input-form"
             type="number"
+            min="0"
             name="activeEnergy"
             v-model="activeEnergyConsumed"
             @blur="v$.activeEnergyConsumed.$touch"
@@ -43,7 +44,6 @@
             class="input-form"
             type="number"
             min="0"
-            step="0.1"
             name="activeEnergy"
             v-model="reactiveEnergyConsumed"
             @blur="v$.reactiveEnergyConsumed.$touch"
@@ -67,9 +67,10 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required, helpers  } from "@vuelidate/validators";
+import { required, helpers, minValue  } from "@vuelidate/validators";
 
 export default {
+  emits: ["save-reading"],
   data() {
     return {
       v$: useVuelidate(),
@@ -86,8 +87,15 @@ export default {
   validations() {
     return {
       date: { required: helpers.withMessage('Data musi być wypełniona.', required) },
-      activeEnergyConsumed: { required: helpers.withMessage('Energia pobrana musi być wypełniona.', required) },
-      reactiveEnergyConsumed: { required: helpers.withMessage('Energia oddana musi być wypełniona.', required) },
+      activeEnergyConsumed: { 
+        required: helpers.withMessage('Energia pobrana musi być wypełniona.', required),
+        minValue: helpers.withMessage('Wartość energii oddanej musi być większa od 0.', minValue(1))
+        },
+      reactiveEnergyConsumed: { 
+        required: helpers.withMessage('Energia oddana musi być wypełniona.', required),
+        minValue: helpers.withMessage('Wartość energii pobranej musi być większa od 0.', minValue(1))
+        },
+
     };
   },
   methods: {
