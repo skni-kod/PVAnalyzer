@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangePassword;
+use App\Http\Requests\EditProfile;
 use App\Http\Requests\RegisterUser;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class AuthController extends Controller
         return new UserResource($user);
     }
 
-    public function editProfile(Request $request, User $user){
+    public function editProfile(EditProfile $request, User $user){
 
         $data = $request->only([
             'name',

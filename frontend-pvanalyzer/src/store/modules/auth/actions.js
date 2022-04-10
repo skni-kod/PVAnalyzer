@@ -5,13 +5,12 @@ export default {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
-    let url = `http://127.0.0.1:8000/api/users/${userId}`;
-
+    const url = `http://127.0.0.1:8000/api/users/${userId}`;
     let data = {
       name: payload.name,
       email: payload.email,
     };
-    await axios
+    const response = await axios
       .put(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -25,10 +24,24 @@ export default {
         context.commit("setEmail", {
           userEmail: res.data.data.email,
         });
+        return res;
       })
       .catch((error) => {
-        console.error(error);
+        if (error.response.status == "422") {
+          const errors = {
+            status: error.response.status,
+            errors: error.response.data.errors,
+            statusText: error.response.statusText,
+          };
+          return errors;
+        }else {
+          context.commit("setErrors", {
+            errors: error.response.statusText,
+          });
+        }
       });
+
+      return response;
   },
 
   async changePassword(context, payload) {
@@ -48,9 +61,9 @@ export default {
           "content-type": "application/json",
         },
       })
-      .then((res) => {
+      .then(() => {
         //komunikat o poprawności wykonania
-        console.log(res);
+        console.log("udało się");
       })
       .catch((error) => {
         const errors = error.response;

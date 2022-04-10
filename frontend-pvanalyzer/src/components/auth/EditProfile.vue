@@ -1,4 +1,7 @@
 <template>
+<base-dialog :show="isError" @close="handleError" title="Error">
+    {{ errorMessage }}
+  </base-dialog>
   <form @submit.prevent="submitForm">
     <div class="form-control">
       <label class="label-form" for="email">Email</label>
@@ -6,80 +9,143 @@
         class="input-form"
         type="text"
         id="email"
-        v-model.trim="email.val"
-        required
+        v-model.trim="email"
+        @blur="v$.email.$touch"
       />
     </div>
+<validate-message :value="v$.email"></validate-message>
     <div class="form-control">
       <label class="label-form" for="username">Nazwa użytkownika</label>
       <input
         class="input-form"
         type="text"
         id="username"
-        v-model.trim="name.val"
-        required
+        v-model.trim="name"
+        @blur="v$.name.$touch"
       />
     </div>
+    <validate-message :value="v$.name"></validate-message>
     <div class="buttons-group">
-      <base-blue-button type="button" @click="cancelClicked">Cancel</base-blue-button>
+      <base-blue-button type="button" @click="cancelClicked"
+        >Cancel</base-blue-button
+      >
       <base-blue-button colorButton="button-green">Save</base-blue-button>
     </div>
   </form>
 </template>
 
 <script>
+import ValidateMessage from "../../components/validation/ErrorMessage.vue";
+import useVuelidate from "@vuelidate/core";
+import { required, helpers } from "@vuelidate/validators";
+
 export default {
-  emits: ["cancel-form", "save-data"],
+  emits: ["cancel-form", "submit-clicked"],
   props: {
     userName: String,
     userEmail: String,
   },
+  components: {
+    ValidateMessage
+  },
   data() {
     return {
-      name: {
-        val: "",
-        isValid: true,
+      v$: useVuelidate(),
+      name: "",
+      email: "",
+      vuelidateExternalResults: {
+        email: null,
+        name: null,
       },
-      email: {
-        val: "",
-        isValid: true,
-      },
-      formIsValid: true,
     };
   },
   created() {
-    this.name.val = this.userName;
-    this.email.val = this.userEmail;
+    this.name = this.userName;
+    this.email = this.userEmail;
+  },
+  computed:{
+    isError() {
+      return this.$store.getters.errors == "" ? false : true;
+    },
+    errorMessage() {
+      return this.$store.getters.errors;
+    },
+  },
+  validations() {
+    return {
+      email: {
+        required: helpers.withMessage("Email musi być wypełniony.", required),
+      },
+      name: {
+        required: helpers.withMessage(
+          "Nazwa użytkownika musi być wypełniona.",
+          required
+        ),
+      },
+    };
   },
   methods: {
     cancelClicked() {
       this.$emit("cancel-form");
     },
-    validateForm(){
-        this.formIsValid = true;
-        if(this.name.val === ''){
-            this.name.isValid = false;
-            this.formIsValid = false;
-        }
-        if(this.email.val === ''){
-            this.email.isValid = false;
-            this.formIsValid = false;
-        }
+    async validate() {
+      this.v$.$clearExternalResults();
+      if (!(await this.v$.$validate())) {
+        return true;
+      }
     },
-    submitForm(){
-        this.validateForm();
-
-        if(!this.formIsValid){
-            return;
+    async submitForm() {
+      this.v$.$clearExternalResults();
+      await this.v$.$validate();
+      if (!this.v$.$invalid) {
+        const formData = {};
+        if (this.email != this.userEmail) formData.email = this.email;
+        if (this.name != this.userName) formData.name = this.name;
+        this.isLoading = true;
+        const response = await this.$store.dispatch("editProfile", formData);
+        if (!this.isError) {
+          if (response.status == "200") {
+            const successMessage = {
+              title: "Sukces!",
+              desc: "Dodano nowy odczyt",
+            };
+            const submitData = {
+              email: response.data.data.email,
+              name: response.data.data.name,
+            }
+            this.$store.commit("setMessage", successMessage);
+            this.$emit("submit-clicked", submitData);
+          }
+          else if(response.status == 422){
+          for (let e in response.errors) {
+            switch (e) {
+              case "name": {
+                const rules = response.errors[e];
+                let errors = [];
+                for (let rule in rules) {
+                  errors.push(response.errors[e][rule]);
+                }
+                this.vuelidateExternalResults.name = errors;
+                break;
+              }
+              case "email": {
+                const rules = response.errors[e];
+                let errors = [];
+                for (let rule in rules) {
+                  errors.push(response.errors[e][rule]);
+                }
+                this.vuelidateExternalResults.email = errors;
+                break;
+              }
+            }
+          }
         }
-
-        const formData = {
-            name: this.name.val,
-            email: this.email.val
         }
-
-        this.$emit('save-data', formData);
-    }
+      }
+    },
+    handleError() {
+      this.$store.commit("clearErrors");
+    },
   },
 };
 </script>
