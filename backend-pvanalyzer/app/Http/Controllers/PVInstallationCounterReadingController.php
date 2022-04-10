@@ -28,17 +28,10 @@ class PVInstallationCounterReadingController extends Controller
     public function index(PVInstallation $pVInstallation)
     {
         $result = $this->counterReadingService->getAll($pVInstallation);
-        // $counterReadings = CounterReading::where('p_v_installation_id', $pVInstallation->id)->get();
-        // $one = $counterReadings[1];
+        
         return $result;
-        // $date = Carbon::createFromFormat('Y-m-d', $one['date']);
-   
-        // $monthName = $date->format('F');
-        // $one['month'] = $monthName;
-        // // ->format('m');
-        // return $one;
-        // return CounterReading::where('p_v_installation_id', $pVInstallation->id)->get();
     }
+
     public function monthly(PVInstallation $pVInstallation){
         $result = $this->counterReadingService->monthly($pVInstallation);
         return new CounterReadingCollection($result);
@@ -55,7 +48,6 @@ class PVInstallationCounterReadingController extends Controller
             'date',
             'active_energy_consumed',
             'reactive_energy_consumed',
-            // 'energy_to_recover' //TODO: this value must be calc!!!
         ]);
 
         $result =  $this->counterReadingService->saveCounterReadingData($data, $pVInstallation);

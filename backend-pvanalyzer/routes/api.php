@@ -16,9 +16,6 @@ use App\Http\Controllers\PVInstallationCounterReadingController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// Route::model('pv-installations', App\Models\PVInstallation::class);
-// Route::model('counterReading', App\Models\CounterReading::class);
-
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
