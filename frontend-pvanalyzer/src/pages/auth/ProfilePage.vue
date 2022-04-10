@@ -23,7 +23,7 @@
         :user-name="userName"
         v-else
         @cancel-form="showUser"
-        @save-data="saveData"
+        @submit-clicked="saveData"
       />
       <div class="with-buttons">
         <div class="one-line" v-if="!isChange">
@@ -95,12 +95,6 @@ export default {
       this.isChange = !this.isChange;
     },
     async saveData(data) {
-      try {
-        await this.$store.dispatch("editProfile", data);
-      } catch (err) {
-        this.error = err.message;
-      }
-      if (!this.error) {
         this.userName = data.name;
         this.userEmail = data.email;
         this.isEdit = false;
@@ -109,7 +103,6 @@ export default {
         setTimeout(() => {
           this.changedName = false;
         }, 3000);
-      }
     },
     async changePassword(data) {
       try {
