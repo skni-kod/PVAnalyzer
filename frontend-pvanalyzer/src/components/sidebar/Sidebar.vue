@@ -8,11 +8,11 @@
       </h1></router-link
     >
 
-    <SidebarLink to="/dashboard" icon="fas fa-home-alt">Home</SidebarLink>
-    <SidebarLink to="/pv-installation" icon="fa-solid fa-solar-panel"
+    <SidebarLink v-if="hasInstallation" to="/dashboard" icon="fas fa-home-alt">Home</SidebarLink>
+    <SidebarLink  v-if="hasInstallation" to="/pv-installation" icon="fa-solid fa-solar-panel"
       >Moja instalacja</SidebarLink
     >
-    <SidebarLink to="/profile" icon="fas fa-user">{{ userName }}</SidebarLink>
+    <SidebarLink  to="/profile" icon="fas fa-user">{{ userName }}</SidebarLink>
     <SidebarLink @click="logout" icon="fa-solid fa-arrow-right-from-bracket"
       >Wyloguj</SidebarLink
     >
@@ -43,6 +43,9 @@ export default {
     userName() {
       return this.$store.getters.userName;
     },
+    hasInstallation(){
+      return this.$store.getters["pVInstallation/hasInstallation"];
+    }
   },
   methods: {
     logout() {

@@ -7,5 +7,8 @@ export default{
     },
     installationId(state){
         return state.idInstallation;
+    },
+    hasInstallation(state){
+        return !!state.idInstallation;
     }
 };

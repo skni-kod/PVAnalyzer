@@ -4,8 +4,10 @@
     v-if="!isLoading"
     :style="{ marginLeft: marginLeftComputed }"
   >
+    <div v-if="hasReadings">
     <line-chart-card :actualBalance="actualBalance"></line-chart-card>
     <bar-chart-card :balance="balance"></bar-chart-card>
+    </div>
     <last-readings-table
       :tableData="tableData"
     ></last-readings-table>
@@ -61,6 +63,9 @@ export default {
     allReadings() {
       return this.$store.getters["readings/counterReadings"];
     },
+    hasReadings(){
+      return (this.$store.getters["readings/counterReadings"].length)?true:false;
+    },
     powerInstallation() {
       return this.$store.getters["pVInstallation/powerInstallation"];
     },
@@ -68,10 +73,12 @@ export default {
       return this.getLastReadingsInMonths();
     },
     balance() {
-      return this.monthlyData[this.monthlyData.length - 1].balance;
+      return 0;
+      // return this.monthlyData[this.monthlyData.length - 1].balance;
     },
     actualBalance() {
-      return this.allReadings[this.allReadings.length - 1].balance;
+      // return this.allReadings[this.allReadings.length - 1].balance;
+      return 0;
     },
     tableData() {
       return this.allReadings.slice(-5);

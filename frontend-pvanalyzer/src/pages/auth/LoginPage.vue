@@ -1,43 +1,31 @@
 <template>
-<base-dialog :show="isError" @close="handleError" title="Error">
+  <base-dialog :show="isError" @close="handleError" title="Error">
     {{ errorMessage }}
   </base-dialog>
-<div v-if="isLoading">
-  <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
-</div>
-<base-login-register v-else>
+  <div v-if="isLoading">
+    <loading v-model:active="isLoading" :can-cancel="true" :opacity="1" />
+  </div>
+  <base-login-register v-else>
     <div class="box">
       <div class="content">
         <form @submit.prevent="submitForm">
           <div class="form-control">
             <label class="label-form" for="username">Nazwa użytkownika</label>
-            <input
-              class="input-form"
-              type="text"
-              id="username"
-              placeholder="Email"
-              v-model.trim="email"
-              @blur="v$.email.$touch"
-            /> 
+            <input class="input-form" type="text" id="username" placeholder="Email" v-model.trim="email"
+              @blur="v$.email.$touch" />
             <div class="error-message" v-if="v$.email.$error">
               <span v-for="error in v$.email.$errors" :key="error.$uid">{{
-                error.$message
+                  error.$message
               }}</span>
             </div>
           </div>
           <div class="form-control">
             <label class="label-form" for="password">Hasło </label>
-            <input
-              class="input-form"
-              type="password"
-              id="password"
-              placeholder="Hasło"
-              v-model.trim="password"
-              @blur="v$.password.$touch"
-            />
+            <input class="input-form" type="password" id="password" placeholder="Hasło" v-model.trim="password"
+              @blur="v$.password.$touch" />
             <div class="error-message" v-if="v$.password.$error">
               <span v-for="error in v$.password.$errors" :key="error.$uid">{{
-                error.$message
+                  error.$message
               }}</span>
             </div>
           </div>
@@ -51,10 +39,10 @@
     <div class="bottom-text">
       <span>Nie masz konta?
         <router-link to="/register">Załóż konto</router-link>
-        </span>
+      </span>
     </div>
   </base-login-register>
-  
+
 </template>
 
 <script>
@@ -70,7 +58,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
-      isLoading:false,
+      isLoading: false,
       email: "",
       password: "",
       error: null,
@@ -106,7 +94,7 @@ export default {
         return true;
       }
     },
-    async submitForm() {      
+    async submitForm() {
       this.v$.$clearExternalResults();
       await this.v$.$validate();
       if (!this.v$.$invalid) {
@@ -116,20 +104,24 @@ export default {
         };
         this.isLoading = true;
         const response = await this.$store.dispatch("login", actionPayload);
-        
-        if(!this.isError){
+
+        if (!this.isError) {
           if (response.status == "201") {
-          await this.$store.dispatch("pVInstallation/loadInstallation");
-          const redirectUrl = "/" + (this.$route.query.redirect || "dashboard");
-          this.$router.replace(redirectUrl);
+            
+            const hasInstallation =  await this.$store.dispatch("pVInstallation/loadInstallation");
+            
+            console.log(hasInstallation == true);
+            const dashboardUrl = "/" + (this.$route.query.redirect || "dashboard");
+            const addReadingUrl = '/add-installation';
+            (this.$store.getters["pVInstallation/hasInstallation"]) ? this.$router.replace(dashboardUrl) : this.$router.replace(addReadingUrl);
+          }
+          if (response.status == "401") {
+            this.isLoading = false;
+            const rules = response.errors;
+            this.vuelidateExternalResults.password = rules;
+          }
         }
-        if (response.status == "401") { 
-          this.isLoading = false;         
-                const rules = response.errors;
-                this.vuelidateExternalResults.password = rules;
-        }
-        }
-        
+
       }
     },
     handleError() {
@@ -144,20 +136,24 @@ export default {
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.26);
   margin: 5% 15% 0 15%;
 }
+
 .content {
   padding-top: 5px;
   background-color: #ffffff;
 }
+
 .form-control {
   margin: 15px 0 15px 0;
   padding: 0 40px 0 40px;
 }
+
 .label-form {
   display: block;
   color: #1845ba;
   font-size: 12px;
   margin: 10px 0 10px 0;
 }
+
 .input-form {
   font-size: 12px;
   width: 100%;
@@ -176,10 +172,12 @@ export default {
   font-weight: bold;
   border: none;
 }
+
 a:hover,
 a:active {
   color: #0044e2;
 }
+
 button:hover,
 button:active {
   background-color: #0044e2;
@@ -193,6 +191,7 @@ button:active {
   margin-right: 15%;
   text-align: center;
 }
+
 .bottom-text span {
   color: #0934a5;
   font-size: 12px;
@@ -202,17 +201,20 @@ button:active {
   font-size: 16px;
   margin-left: 15px;
 }
+
 @media screen and (max-width: 650px) {
   .bottom-text {
     margin-bottom: 20px;
   }
 }
+
 .error-message {
   display: flex;
   flex-direction: column;
   color: red;
   font-size: 12px;
 }
+
 .error-message span {
   display: block;
 }
