@@ -25,7 +25,21 @@ class StorePVInstallation extends FormRequest
     {
         return [
             'date' => 'nullable|date',
-            'power' => 'required|numeric'
+            'power' => 'required|numeric|min:1'
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'date.date' => 'Data podłączenia instalacji musi mieć odpowiedni format',
+            'power.numeric' => 'Moc instalacji musi być wartością liczbową',
+            'power.min' => 'Moc instalacji musi być większa od 1.',
         ];
     }
 }

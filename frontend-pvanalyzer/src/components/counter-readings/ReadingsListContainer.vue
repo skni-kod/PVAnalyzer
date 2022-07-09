@@ -4,7 +4,7 @@
       <h1>Lista odczytów</h1>
       <span>Zobacz listę</span>
     </div>
-    <table>
+    <table v-if="hasData">
       <tr>
         <th>Data</th>
         <th>Pobrana</th>
@@ -20,6 +20,7 @@
         <td>{{ data.balance }} kWh</td>
       </tr>
     </table>
+    <span v-else>Nie posiadasz żadnych odczytów.</span>
     <base-blue-button link to="/add-reading" colorButton="button-green"
       >Dodaj nowy odczyt</base-blue-button
     >
@@ -31,6 +32,11 @@ export default {
   props: {
     tableData: Array,
   },
+  computed:{
+    hasData(){
+      return (this.tableData.length)?true:false;
+    }
+  }
 };
 </script>
 

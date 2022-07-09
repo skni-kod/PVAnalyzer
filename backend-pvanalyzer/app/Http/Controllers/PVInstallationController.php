@@ -17,7 +17,20 @@ class PVInstallationController extends Controller
      */
     public function index(Request $request)
     {
-        return PVInstallationResource::collection(PVInstallation::where('user_id', $request->user()->id)->paginate());
+        $user = User::find($request->user()->id);
+        return new PVInstallationResource($user->pVInstallation);
+        // return $user->pVInstallation;
+        // return PVInstallation::where('user_id', $request->user()->id);
+        // return PVInstallationResource::collection(($user->pVInstallation)->paginate());
+    }
+
+    public function myInstallation(){
+        // if(User::find(auth()->user()->id)->pvInstallation == null) return 'siema';
+        // else return '47';
+        // return User::find(auth()->user()->id)->pvInstallation;
+        // return $user->pvInstallation;
+        // return new PVInstallationResource(null);
+        return new PVInstallationResource(User::find(auth()->user()->id)->pvInstallation);
     }
 
     /**
